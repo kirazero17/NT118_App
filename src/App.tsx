@@ -81,7 +81,7 @@ function App(): JSX.Element {
             screen and now it is.
           </Section>
           <Section title="See Your Changes">
-            <ReloadInstructions />
+            Sussy sus has changed the app. Anyway, no Wonderwall here.
           </Section>
           <Section title="Debug">
             <DebugInstructions />
