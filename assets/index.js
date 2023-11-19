@@ -1,2 +1,2 @@
-export { default as BGImage } from "./images/bg.jpg";
+export { default as defaultAvatar } from "./images/default.jpg";
 export { default as Logo } from "./images/logo.png";

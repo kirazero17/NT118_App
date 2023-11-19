@@ -1,4 +1,5 @@
-export { default as HomeScreen } from "./HomeScreen";
-export { default as LoginScreen } from "./LoginScreen";
-export { default as RegisterScreen } from "./RegisterScreen";
-export { default as ForgotPasswordScreen } from "./ForgotPasswordScreen";
+export { default as Home } from "./Home";
+export { default as Login } from "./Login";
+export { default as Register } from "./Register";
+export { default as ForgotPassword } from "./ForgotPassword";
+export { default as Loading } from "./Loading";

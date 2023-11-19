@@ -9,28 +9,16 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
-const UserTextInput = ({
-  placeholder,
-  isPass,
-  setStateValue,
-  setGetEmailValidation,
-}) => {
-  const [value, setValue] = useState("");
+const UserTextInput = ({ placeholder, value, isPass, onChangeText }) => {
+  // const [value, setValue] = useState("");
   const [showPass, setShowPass] = useState(true);
   const [icon, setIcon] = useState(faUser);
   const [isEmailValid, setIsEmailValid] = useState(false);
 
-  const handleTextChanged = (text) => {
-    setValue(text);
-    setStateValue(value);
-
-    if (placeholder === "Email") {
-      const emailRegex = /\S+@\S+\.\S+/;
-      const status = emailRegex.test(value);
-      setIsEmailValid(status);
-      setGetEmailValidation(status);
-    }
-  };
+  // const handleTextChanged = (text) => {
+  //   setValue(text);
+  //   onChangeText(value);
+  // };
 
   useLayoutEffect(() => {
     switch (placeholder) {
@@ -53,7 +41,7 @@ const UserTextInput = ({
         placeholder={placeholder}
         placeholderTextColor={"#c7c8d4"}
         value={value}
-        onChangeText={handleTextChanged}
+        onChangeText={(text) => onChangeText(text)}
         secureTextEntry={isPass && showPass}
         autoCapitalize="none"
       />
