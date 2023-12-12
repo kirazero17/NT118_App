@@ -9,16 +9,9 @@ import {
   faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
-const UserTextInput = ({ placeholder, value, isPass, onChangeText }) => {
-  // const [value, setValue] = useState("");
+const Input = ({ placeholder, value, isPass, onChangeText }) => {
   const [showPass, setShowPass] = useState(true);
   const [icon, setIcon] = useState(faUser);
-  const [isEmailValid, setIsEmailValid] = useState(false);
-
-  // const handleTextChanged = (text) => {
-  //   setValue(text);
-  //   onChangeText(value);
-  // };
 
   useLayoutEffect(() => {
     switch (placeholder) {
@@ -33,15 +26,15 @@ const UserTextInput = ({ placeholder, value, isPass, onChangeText }) => {
 
   return (
     <View
-      className={`border bg-white rounded-2xl px-4 py-5 flex-row items-center justify-between space-x-4 my-2 border-gray-200`}
+      className={`border bg-white rounded-2xl px-4 h-14 flex-row items-center justify-between space-x-4 my-2 border-gray-200`}
     >
-      <FontAwesomeIcon icon={icon} color="#454343" size={18} />
+      <FontAwesomeIcon icon={icon} color="#4b5563" size={18} />
       <TextInput
-        className="flex-1 text-lg text-gray-600 font-semibold -mt-1"
+        className="flex-1 text-lg text-gray-600 font-medium -mt-1 h-20"
         placeholder={placeholder}
         placeholderTextColor={"#c7c8d4"}
         value={value}
-        onChangeText={(text) => onChangeText(text)}
+        onChangeText={onChangeText}
         secureTextEntry={isPass && showPass}
         autoCapitalize="none"
       />
@@ -57,4 +50,4 @@ const UserTextInput = ({ placeholder, value, isPass, onChangeText }) => {
   );
 };
 
-export default UserTextInput;
+export default Input;

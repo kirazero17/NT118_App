@@ -1,7 +1,6 @@
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
-import { useState } from "react";
+import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
 import { Logo } from "../../assets";
-import { UserTextInput } from "../components";
+import { AuthForm, Toast } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -10,73 +9,67 @@ import { fireStoreDB, firebaseAuth } from "../config/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { useDispatch } from "react-redux";
 import { SET_USER } from "../context/actions/userAction";
+import { useToast } from "native-base";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const toast = useToast();
   const navigation = useNavigation();
-
   const dispatch = useDispatch();
 
-  const handleSignIn = async () => {
+  const showToast = (title, status, variant) => {
+    toast.show({
+      render: () => <Toast title={title} status={status} variant={variant} />,
+      duration: status === "success" ? 1000 : 2000,
+      placement: status === "success" ? "bottom" : "top",
+    });
+  };
+
+  const handleSignIn = async ({ email, password }) => {
     if (email && password) {
       try {
         await signInWithEmailAndPassword(firebaseAuth, email, password).then(
           (userCred) => {
             if (userCred) {
-              getDoc(doc(fireStoreDB, "users", userCred?.user.uid)).then(
-                (docSnap) => {
+              getDoc(doc(fireStoreDB, "users", userCred?.user.uid))
+                .then((docSnap) => {
                   if (docSnap.exists()) {
                     dispatch(SET_USER(docSnap.data()));
+
+                    showToast(
+                      "Logged in successfully!",
+                      "success",
+                      "top-accent"
+                    );
                   }
-                }
-              );
+                })
+                .then(() => {
+                  navigation.replace("Loading");
+                  setTimeout(() => {
+                    navigation.replace("Home");
+                  }, 2000);
+                });
             }
           }
         );
       } catch (error) {
-        console.log(error);
+        if (error.code === "auth/invalid-login-credentials") {
+          showToast("Invalid login credentials!", "warning", "top-accent");
+        } else if (error.code === "auth/invalid-email") {
+          showToast("Invalid email!", "warning", "top-accent");
+        }
       }
     }
   };
 
   return (
-    <View className="w-full h-full mt-28 flex items-center justify-start py-6 px-6 space-y-6">
+    <View className="w-full h-full mt-20 flex items-center justify-start py-6 px-6 space-y-6">
+      <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="flex-row items-center justify-center">
         <Image source={Logo} className="w-24 h-24" resizeMode="contain" />
         <Text className="text-sky-950 text-2xl font-normal">Welcome Back!</Text>
       </View>
-      <View className="bg-sky-300 w-full flex items-center justify-center px-4 pt-8 rounded-2xl">
-        <UserTextInput
-          placeholder="Email"
-          value={email}
-          isPass={false}
-          onChangeText={setEmail}
-        />
-        <UserTextInput
-          placeholder="Password"
-          value={password}
-          isPass={true}
-          onChangeText={setPassword}
-        />
-        <View className="w-full flex-row items-center justify-end">
-          <TouchableOpacity
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text className="text-lg font-semibold text-blue-950">
-              Forgot password ?
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-          onPress={handleSignIn}
-          className="w-full px-4 py-2 border border-sky-700 rounded-2xl bg-white my-3 flex items-center justify-center"
-        >
-          <Text className="py-2 text-primary text-xl font-semibold">
-            Sign In
-          </Text>
-        </TouchableOpacity>
+      <View className="bg-sky-300 w-full flex items-center justify-center px-4 pt-6 rounded-2xl">
+        <AuthForm isLogin onSubmit={handleSignIn} />
         <View className="mt-2 flex justify-center relative">
           <Text className="text-gray-800 bg-sky-300 uppercase px-3 z-10 relative">
             Or Login With

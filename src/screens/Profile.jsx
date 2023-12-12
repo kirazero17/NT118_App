@@ -1,33 +1,31 @@
+import { useState } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   TouchableOpacity,
   Image,
+  StatusBar,
+  Dimensions,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faArrowLeft,
-  faEllipsisVertical,
-  faPhone,
-  faVideo,
-  faMessage,
-  faEllipsis,
-  faShieldHalved,
-  faChevronRight,
-  faCircleInfo,
-  faUserGroup,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
-import { defaultAvatar } from "../../assets";
+import { faArrowLeft, faPen } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { firebaseAuth } from "../config/firebase";
-import { SET_USER_NULL } from "../context/actions/userAction";
+import { fireStoreDB, firebaseAuth } from "../config/firebase";
+import { SET_USER_NULL, SET_USER } from "../context/actions/userAction";
+import SettingButton from "../components/ui/SettingButton";
+import { avatars } from "../utils/avatarsApi";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 
 const Profile = () => {
+  const [isMenu, setIsMenu] = useState(false);
+  const screenWidth = Math.round(Dimensions.get("window").width);
+  const screenHeight = Math.round(Dimensions.get("window").height);
+
   const navigation = useNavigation();
+
   const user = useSelector((state) => state.user.user);
 
   const dispatch = useDispatch();
@@ -39,24 +37,71 @@ const Profile = () => {
     });
   };
 
+  const handleAvatar = async (item) => {
+    setIsMenu(false);
+
+    await updateDoc(doc(fireStoreDB, "users", user?._id), {
+      profilePic: item?.image.asset.url,
+    });
+
+    await getDoc(doc(fireStoreDB, "users", user?._id)).then((docSnap) => {
+      if (docSnap.exists()) {
+        dispatch(SET_USER(docSnap.data()));
+      }
+    });
+  };
+
   return (
-    <SafeAreaView className="flex-1 items-center justify-start mt-20">
-      <View className="w-full flex-row items-center justify-between px-4">
+    <SafeAreaView className="flex-1 items-center justify-start bg-[#eaeaea]">
+      <StatusBar backgroundColor="#9ca3af" barStyle="default" />
+      {isMenu && (
+        <>
+          <View
+            className="absolute inset-0 z-10 bg-blue-50"
+            style={{ width: screenWidth, height: screenHeight }}
+          >
+            <ScrollView>
+              <View
+                className="w-full h-full px-4 py-2 flex-row flex-wrap items-center justify-evenly"
+                style={{ width: screenWidth, height: screenHeight }}
+              >
+                {avatars?.map((item) => (
+                  <TouchableOpacity
+                    onPress={() => handleAvatar(item)}
+                    key={item._id}
+                    className="w-20 m-3 h-20 p-1 rounded-full border border-sky-300 relative"
+                  >
+                    <Image
+                      source={{ uri: item?.image.asset.url }}
+                      className="w-full h-full"
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
+        </>
+      )}
+      <View className="w-full px-4 mt-3">
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FontAwesomeIcon icon={faArrowLeft} size={24} color="#555" />
         </TouchableOpacity>
-        <TouchableOpacity>
-          <FontAwesomeIcon icon={faEllipsisVertical} size={24} color="#555" />
-        </TouchableOpacity>
       </View>
-      <View className=" item-center justify-center">
-        <View className="w-20 h-20 relative border-2 border-primary p-1 rounded-full">
+      <View className=" item-center justify-center -mt-5">
+        <TouchableOpacity
+          onPress={() => setIsMenu(true)}
+          className="w-20 h-20 relative border-2 border-primary rounded-full"
+        >
           <Image
-            source={defaultAvatar}
+            source={{ uri: user?.profilePic }}
             className="w-full h-full rounded-full"
             resizeMode="contain"
           />
-        </View>
+          <View className="w-6 h-6 bg-sky-400 rounded-full absolute top-0 right-0 flex items-center justify-center">
+            <FontAwesomeIcon icon={faPen} color="#cffafe" size={12} />
+          </View>
+        </TouchableOpacity>
       </View>
 
       <Text className="text-2xl font-semibold text-primary pt-3">
@@ -65,73 +110,27 @@ const Profile = () => {
       <Text className="text-base font-semibold text-gray-500">
         {user?.providerData.email}
       </Text>
-      <View className="w-full flex-row items-center justify-evenly py-6">
-        <View className="items-center justify-center">
-          <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-            <FontAwesomeIcon icon={faMessage} size={24} color="#666" />
-          </TouchableOpacity>
-          <Text className="text-sm text-gray-600 py-1">Message</Text>
-        </View>
-        <View className="items-center justify-center">
-          <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-            <FontAwesomeIcon icon={faVideo} size={24} color="#666" />
-          </TouchableOpacity>
-          <Text className="text-sm text-gray-600 py-1">Video Call</Text>
-        </View>
-        <View className="items-center justify-center">
-          <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-            <FontAwesomeIcon icon={faPhone} size={24} color="#666" />
-          </TouchableOpacity>
-          <Text className="text-sm text-gray-600 py-1">Call</Text>
-        </View>
-        <View className="items-center justify-center">
-          <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-            <FontAwesomeIcon icon={faEllipsis} size={24} color="#666" />
-          </TouchableOpacity>
-          <Text className="text-sm text-gray-600 py-1">More</Text>
-        </View>
+
+      <View className="w-full items-center mt-8">
+        <SettingButton label="Theme" isFirst status="Auto" color="#1e293b" />
+        <SettingButton label="Status" status="On" color="#22c55e" />
+        <SettingButton label="Privacy & Security" color="#f472b6" />
+        <SettingButton label="Support" isLast color="#38bdf8" />
       </View>
-      <View className="w-full px-6 py-8 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <FontAwesomeIcon icon={faShieldHalved} size={20} />
-          <Text className="text-base font-semibold text-gray-600 px-3">
-            Privacy
-          </Text>
-        </View>
-        <FontAwesomeIcon icon={faChevronRight} size={20} color="#666" />
+      <View className="w-full items-center mt-8">
+        <SettingButton label="Avatar" isFirst color="#a78bfa" />
+        <SettingButton label="Notification & Sound" color="#fbbf24" />
+        <SettingButton label="File & Images" isLast color="#d946ef" />
       </View>
-      <View className="w-full px-6 py-8 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <FontAwesomeIcon icon={faUserGroup} size={20} />
-          <Text className="text-base font-semibold text-gray-600 px-3">
-            Groups
-          </Text>
-        </View>
-        <FontAwesomeIcon icon={faChevronRight} size={20} color="#666" />
+      <View className="w-full items-center mt-8">
+        <SettingButton label="Account" isFirst isLast color="#374151" />
       </View>
-      <View className="w-full px-6 py-8 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <FontAwesomeIcon icon={faCircleInfo} size={20} />
-          <Text className="text-base font-semibold text-gray-600 px-3">
-            Support
-          </Text>
-        </View>
-        <FontAwesomeIcon icon={faChevronRight} size={20} color="#666" />
-      </View>
-      <View className="w-full px-6 py-8 flex-row items-center justify-between">
-        <View className="flex-row items-center">
-          <FontAwesomeIcon icon={faUser} size={20} />
-          <Text className="text-base font-semibold text-gray-600 px-3">
-            Account
-          </Text>
-        </View>
-        <FontAwesomeIcon icon={faChevronRight} size={20} color="#666" />
-      </View>
+
       <TouchableOpacity
         onPress={handleSignOut}
-        className="w-full px-6 py-4 flex-row items-center justify-center"
+        className="w-11/12 px-3 py-3 mt-12 border border-sky-200 rounded-xl bg-white flex-row items-center justify-center"
       >
-        <Text className="text-xl font-semibold text-primary px-3">Logout</Text>
+        <Text className="font-medium text-xl text-primary px-3">Logout</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
