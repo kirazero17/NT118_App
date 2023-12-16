@@ -4,6 +4,7 @@ export { default as Register } from "./Register";
 export { default as ForgotPassword } from "./ForgotPassword";
 export { default as Loading } from "./Loading";
 export { default as Profile } from "./Profile";
+export { default as ProfileContact } from "./ProfileContact";
 export { default as Contacts } from "./Contacts";
 export { default as Calls } from "./Calls";
 export { default as Discovery } from "./Discovery";

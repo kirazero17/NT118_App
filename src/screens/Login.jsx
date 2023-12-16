@@ -6,9 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { fireStoreDB, firebaseAuth } from "../config/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { ref, get } from "firebase/database";
 import { useDispatch } from "react-redux";
-import { SET_USER } from "../context/actions/userAction";
+import { SET_USER } from "../context/slices/userSlice";
 import { useToast } from "native-base";
 
 const Login = () => {
@@ -27,42 +27,34 @@ const Login = () => {
   const handleSignIn = async ({ email, password }) => {
     if (email && password) {
       try {
-        await signInWithEmailAndPassword(firebaseAuth, email, password).then(
-          (userCred) => {
-            if (userCred) {
-              getDoc(doc(fireStoreDB, "users", userCred?.user.uid))
-                .then((docSnap) => {
-                  if (docSnap.exists()) {
-                    dispatch(SET_USER(docSnap.data()));
-
-                    showToast(
-                      "Logged in successfully!",
-                      "success",
-                      "top-accent"
-                    );
-                  }
-                })
-                .then(() => {
-                  navigation.replace("Loading");
-                  setTimeout(() => {
-                    navigation.replace("Home");
-                  }, 2000);
-                });
-            }
-          }
+        const userCred = await signInWithEmailAndPassword(
+          firebaseAuth,
+          email,
+          password
         );
+
+        const user = await get(ref(fireStoreDB, "users/" + userCred?.user.uid));
+
+        dispatch(SET_USER(user.val()));
+
+        showToast("Login successfully!", "success", "left-accent");
+
+        navigation.replace("Loading");
+        setTimeout(() => {
+          navigation.replace("Home");
+        }, 2000);
       } catch (error) {
         if (error.code === "auth/invalid-login-credentials") {
-          showToast("Invalid login credentials!", "warning", "top-accent");
+          showToast("Invalid login credentials!", "warning", "left-accent");
         } else if (error.code === "auth/invalid-email") {
-          showToast("Invalid email!", "warning", "top-accent");
+          showToast("Invalid email!", "warning", "left-accent");
         }
       }
     }
   };
 
   return (
-    <View className="w-full h-full mt-20 flex items-center justify-start py-6 px-6 space-y-6">
+    <View className="w-full h-full mt-16 flex items-center justify-start py-6 px-6 space-y-6">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="flex-row items-center justify-center">
         <Image source={Logo} className="w-24 h-24" resizeMode="contain" />

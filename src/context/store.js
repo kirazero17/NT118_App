@@ -1,6 +1,15 @@
-import { legacy_createStore as createStore } from "redux";
-import myReducer from "./reducers";
+import { configureStore } from "@reduxjs/toolkit";
 
-const Store = createStore(myReducer);
+import userSlice from "./slices/userSlice";
+import userChatSlice from "./slices/userChatSlice";
+import chatSlice from "./slices/chatSlice";
+
+const Store = configureStore({
+  reducer: {
+    user: userSlice.reducer,
+    userChat: userChatSlice.reducer,
+    chat: chatSlice.reducer,
+  },
+});
 
 export default Store;

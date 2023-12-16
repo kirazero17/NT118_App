@@ -4,7 +4,7 @@ import { AuthForm, Toast } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { fireStoreDB, firebaseAuth } from "../config/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { ref, set } from "firebase/database";
 import { useToast } from "native-base";
 
 const Register = () => {
@@ -16,7 +16,7 @@ const Register = () => {
     toast.show({
       render: () => <Toast title={title} status={status} variant={variant} />,
       duration: status === "success" ? 1000 : 2000,
-      placement: "top",
+      placement: "bottom",
     });
   };
 
@@ -29,34 +29,55 @@ const Register = () => {
           password
         );
 
-        showToast("Account created successfully!", "success", "top-accent");
+        showToast("Account created successfully!", "success", "left-accent");
 
         const data = {
-          _id: userCred?.user.uid,
+          id: userCred?.user.uid,
           fullName: name,
-          profilePic: defaultAvatar,
-          providerData: userCred.user.providerData[0],
+          email: email,
+          roomChats: [],
+          listFriends: [],
+          listBlocked: [],
+          createAt: new Date().toISOString(),
         };
 
-        await setDoc(doc(fireStoreDB, "users", userCred?.user.uid), data);
+        await set(ref(fireStoreDB, "users/" + userCred?.user.uid), data);
+
+        await set(ref(fireStoreDB, "userChats/" + userCred?.user.uid), {});
 
         navigation.navigate("Login");
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
-          showToast("Email already in use!", "warning", "top-accent");
+          showToast("Email already in use!", "warning", "left-accent");
         } else if (error.code === "auth/invalid-email") {
-          showToast("Invalid email!", "warning", "top-accent");
+          showToast("Invalid email!", "warning", "left-accent");
         } else if (error.code === "auth/weak-password") {
-          showToast("Weak password!", "warning", "top-accent");
+          showToast("Weak password!", "warning", "left-accent");
         }
       }
     } else {
-      showToast("Please fill all the fields!", "warning", "top-accent");
+      showToast("Please fill all the fields!", "warning", "left-accent");
     }
   };
-
+  // const handleSignUp = async ({ name, email, password }) => {
+  //   const data = {
+  //     username: name,
+  //     email: email,
+  //     password: password,
+  //   };
+  //   await fetch("http://172.20.10.12:3000/api/auth/register", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(data),
+  //   }).then((res) => {
+  //     console.log(res);
+  //     showToast("Account created successfully!", "success", "top-accent");
+  //   });
+  // };
   return (
-    <View className="w-full h-full mt-20 flex items-center justify-start py-6 px-6 space-y-6">
+    <View className="w-full h-full mt-16 flex items-center justify-start py-6 px-6 space-y-6">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="flex-row items-center justify-center">
         <Image source={Logo} className="w-24 h-24" resizeMode="contain" />

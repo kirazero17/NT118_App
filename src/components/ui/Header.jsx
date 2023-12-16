@@ -12,7 +12,7 @@ const Header = ({ title, icon, size }) => {
   return (
     <>
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
-      <View className="w-full flex-row items-center justify-between px-4 py-2 shadow-2xl">
+      <View className="w-full flex-row items-center justify-between px-4 py-2">
         <TouchableOpacity
           onPress={() => navigation.navigate("Profile")}
           className="w-[54px] h-[54px] rounded-full border-2 border-sky-400 flex items-center justify-center"

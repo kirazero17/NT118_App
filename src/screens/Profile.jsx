@@ -8,16 +8,18 @@ import {
   StatusBar,
   Dimensions,
   ScrollView,
+  Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft, faPen } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { fireStoreDB, firebaseAuth } from "../config/firebase";
-import { SET_USER_NULL, SET_USER } from "../context/actions/userAction";
+import { SET_USER, SET_USER_NULL } from "../context/slices/userSlice";
+import { SET_NULL } from "../context/slices/userChatSlice";
 import SettingButton from "../components/ui/SettingButton";
 import { avatars } from "../utils/avatarsApi";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { update, ref, get } from "firebase/database";
 
 const Profile = () => {
   const [isMenu, setIsMenu] = useState(false);
@@ -31,24 +33,52 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const handleSignOut = async () => {
-    await firebaseAuth.signOut().then(() => {
-      dispatch(SET_USER_NULL());
-      navigation.replace("Login");
-    });
+    try {
+      await firebaseAuth.signOut().then(() => {
+        dispatch(SET_USER_NULL());
+        dispatch(SET_NULL());
+        navigation.replace("Login");
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   const handleAvatar = async (item) => {
     setIsMenu(false);
 
-    await updateDoc(doc(fireStoreDB, "users", user?._id), {
-      profilePic: item?.image.asset.url,
-    });
+    try {
+      const userChats = await get(ref(fireStoreDB, "userChats/"));
 
-    await getDoc(doc(fireStoreDB, "users", user?._id)).then((docSnap) => {
-      if (docSnap.exists()) {
-        dispatch(SET_USER(docSnap.data()));
+      if (userChats.exists()) {
+        Object?.keys(userChats.val())?.map(async (key) => {
+          const userChat = await get(ref(fireStoreDB, "userChats/" + key));
+
+          Object?.keys(userChat.val())?.map(async (chat) => {
+            if (userChat.val()[chat]?.userInfo?.id === user?.id) {
+              await update(
+                ref(fireStoreDB, "userChats/" + key + "/" + chat + "/userInfo"),
+                {
+                  profilePic: item?.image.asset.url,
+                }
+              );
+            }
+          });
+        });
       }
-    });
+
+      await update(ref(fireStoreDB, "users/" + user?.id), {
+        profilePic: item?.image.asset.url,
+      });
+
+      const snapshot = await get(ref(fireStoreDB, "users/" + user?.id));
+
+      dispatch(SET_USER(snapshot.val()));
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   };
 
   return (
@@ -62,7 +92,9 @@ const Profile = () => {
           >
             <ScrollView>
               <View
-                className="w-full h-full px-4 py-2 flex-row flex-wrap items-center justify-evenly"
+                className={`w-full h-full px-4 py-2 flex-row flex-wrap items-center justify-evenly ${
+                  Platform.OS === "ios" ? "mt-8" : ""
+                }`}
                 style={{ width: screenWidth, height: screenHeight }}
               >
                 {avatars?.map((item) => (
@@ -108,7 +140,7 @@ const Profile = () => {
         {user?.fullName}
       </Text>
       <Text className="text-base font-semibold text-gray-500">
-        {user?.providerData.email}
+        {user?.email}
       </Text>
 
       <View className="w-full items-center mt-8">

@@ -8,14 +8,18 @@ import {
   Chat,
   SettingChat,
   SettingCall,
+  ProfileContact,
 } from "./src/screens";
 import { Provider } from "react-redux";
 import Store from "./src/context/store";
 import Profile from "./src/screens/Profile";
 import BottomTab from "./src/utils/BottomTab";
 import { NativeBaseProvider } from "native-base";
+import io from "socket.io-client";
 
 const Stack = createNativeStackNavigator();
+
+const socket = io("http://172.20.10.12:3000");
 
 export default function App() {
   return (
@@ -29,6 +33,7 @@ export default function App() {
             <Stack.Screen name="Loading" component={Loading} />
             <Stack.Screen name="Home" component={BottomTab} />
             <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="ProfileContact" component={ProfileContact} />
             <Stack.Screen name="Chat" component={Chat} />
             <Stack.Screen name="SettingChat" component={SettingChat} />
             <Stack.Screen name="SettingCall" component={SettingCall} />

@@ -8,7 +8,7 @@ const Toast = ({ title, status, variant }) => {
       alignSelf="center"
       flexDirection="row"
       status={status ? status : "info"}
-      variant="left-accent"
+      variant={variant}
     >
       <HStack space={2} flexShrink={1} w="100%" alignItems="center">
         <Alert.Icon />

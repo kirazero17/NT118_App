@@ -8,3 +8,6 @@ export { default as Toast } from "./ui/Toast";
 export { default as ListContact } from "./ui/ListContact";
 export { default as ListCall } from "./ui/ListCall";
 export { default as ContentCard } from "./ui/ContentCard";
+export { default as NotifyCard } from "./ui/NotifyCard";
+export { default as ItemContact } from "./ui/ItemContact";
+export { default as InputChat } from "./ui/InputChat";
