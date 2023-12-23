@@ -16,7 +16,6 @@ import { faArrowLeft, faPen } from "@fortawesome/free-solid-svg-icons";
 import { useSelector, useDispatch } from "react-redux";
 import { fireStoreDB, firebaseAuth } from "../config/firebase";
 import { SET_USER, SET_USER_NULL } from "../context/slices/userSlice";
-import { SET_NULL } from "../context/slices/userChatSlice";
 import SettingButton from "../components/ui/SettingButton";
 import { avatars } from "../utils/avatarsApi";
 import { update, ref, get } from "firebase/database";
@@ -36,7 +35,6 @@ const Profile = () => {
     try {
       await firebaseAuth.signOut().then(() => {
         dispatch(SET_USER_NULL());
-        dispatch(SET_NULL());
         navigation.replace("Login");
       });
     } catch (error) {
@@ -60,7 +58,7 @@ const Profile = () => {
               await update(
                 ref(fireStoreDB, "userChats/" + key + "/" + chat + "/userInfo"),
                 {
-                  profilePic: item?.image.asset.url,
+                  avatar: item?.image.asset.url,
                 }
               );
             }
@@ -69,7 +67,7 @@ const Profile = () => {
       }
 
       await update(ref(fireStoreDB, "users/" + user?.id), {
-        profilePic: item?.image.asset.url,
+        avatar: item?.image.asset.url,
       });
 
       const snapshot = await get(ref(fireStoreDB, "users/" + user?.id));
@@ -82,7 +80,7 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-start bg-[#eaeaea]">
+    <SafeAreaView className="flex-1 items-center justify-start bg-[#dfdfdf]">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       {isMenu && (
         <>
@@ -123,10 +121,10 @@ const Profile = () => {
       <View className=" item-center justify-center -mt-5">
         <TouchableOpacity
           onPress={() => setIsMenu(true)}
-          className="w-20 h-20 relative border-2 border-primary rounded-full"
+          className="w-20 h-20 relative border-2 border-sky-300 rounded-full"
         >
           <Image
-            source={{ uri: user?.profilePic }}
+            source={{ uri: user?.avatar }}
             className="w-full h-full rounded-full"
             resizeMode="contain"
           />
@@ -136,7 +134,7 @@ const Profile = () => {
         </TouchableOpacity>
       </View>
 
-      <Text className="text-2xl font-semibold text-primary pt-3">
+      <Text className="text-2xl font-semibold text-sky-300 pt-3 capitalize">
         {user?.fullName}
       </Text>
       <Text className="text-base font-semibold text-gray-500">
@@ -160,9 +158,9 @@ const Profile = () => {
 
       <TouchableOpacity
         onPress={handleSignOut}
-        className="w-11/12 px-3 py-3 mt-12 border border-sky-200 rounded-xl bg-white flex-row items-center justify-center"
+        className="w-11/12 px-3 py-3 mt-12 border border-sky-300 rounded-xl bg-white flex-row items-center justify-center"
       >
-        <Text className="font-medium text-xl text-primary px-3">Logout</Text>
+        <Text className="font-medium text-xl text-sky-400 px-3">Logout</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

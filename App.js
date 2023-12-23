@@ -15,11 +15,8 @@ import Store from "./src/context/store";
 import Profile from "./src/screens/Profile";
 import BottomTab from "./src/utils/BottomTab";
 import { NativeBaseProvider } from "native-base";
-import io from "socket.io-client";
 
 const Stack = createNativeStackNavigator();
-
-const socket = io("http://172.20.10.12:3000");
 
 export default function App() {
   return (

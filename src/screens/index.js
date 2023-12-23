@@ -7,7 +7,6 @@ export { default as Profile } from "./Profile";
 export { default as ProfileContact } from "./ProfileContact";
 export { default as Contacts } from "./Contacts";
 export { default as Calls } from "./Calls";
-export { default as Discovery } from "./Discovery";
 export { default as Notification } from "./Notification";
 export { default as Chat } from "./Chat";
 export { default as SettingChat } from "./SettingChat";

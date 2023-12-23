@@ -18,7 +18,7 @@ const ListCall = ({ typeIcon, typeCall, day }) => {
   return (
     <View className="flex items-end justify-center mx-5 mb-5">
       <TouchableOpacity className="flex-row">
-        <Avatar.Image size={50} source={{ uri: user?.profilePic }} />
+        <Avatar.Image size={50} source={{ uri: user?.avatar }} />
         <View className="flex-1">
           <View className="flex-row items-center justify-between">
             <View className="ml-3">
@@ -40,10 +40,7 @@ const ListCall = ({ typeIcon, typeCall, day }) => {
           </View>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity
-        className="absolute -right-1 top-2"
-        onPress={() => navigation.navigate("Chat")}
-      >
+      <TouchableOpacity className="absolute -right-1 top-2">
         <FontAwesomeIcon icon={faCircleInfo} size={16} color="#999" />
       </TouchableOpacity>
       <View className="absolute -right-1 top-14 w-10/12 border-b border-gray-200"></View>

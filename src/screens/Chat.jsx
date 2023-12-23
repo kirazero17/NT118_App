@@ -16,7 +16,7 @@ import {
   faPhone,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import { get, ref, onValue } from "firebase/database";
 import { fireStoreDB } from "../config/firebase";
@@ -24,7 +24,7 @@ import { Avatar } from "react-native-paper";
 import { InputChat, MessageText } from "../components";
 
 const Chat = ({ route }) => {
-  const { room } = route.params;
+  const { roomId } = route.params;
   const user = useSelector((state) => state.user.user);
 
   const [loading, setLoading] = useState(false);
@@ -36,24 +36,24 @@ const Chat = ({ route }) => {
     const getRoom = async () => {
       const snapshot = await get(ref(fireStoreDB, "userChats/" + user?.id));
       Object.keys(snapshot.val()).map((key) => {
-        if (key === room) {
+        if (key === roomId) {
           setChat(snapshot.val()[key]);
         }
       });
     };
 
     getRoom();
-  }, [user.id]);
+  }, [roomId]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setLoading(true);
-    onValue(ref(fireStoreDB, "rooms/" + room), (snapshot) => {
+    onValue(ref(fireStoreDB, "rooms/" + roomId), (snapshot) => {
       if (snapshot.exists()) {
         setMessages(snapshot.val().messages);
       }
     });
     setLoading(false);
-  }, [room]);
+  }, [roomId]);
 
   return (
     <View className="w-full flex-1 items-center justify-start ">
@@ -72,12 +72,17 @@ const Chat = ({ route }) => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("SettingChat")}
+          onPress={() =>
+            navigation.navigate("SettingChat", {
+              userId: chat?.userInfo?.id,
+              roomId: roomId,
+            })
+          }
           className="flex-row items-center gap-3 flex-1"
         >
-          <View className="w-12 h-12 relative border-2 border-primary rounded-full">
+          <View className="w-12 h-12 relative border-2 border-sky-400 rounded-full">
             <Image
-              source={{ uri: chat?.userInfo?.profilePic }}
+              source={{ uri: chat?.userInfo?.avatar }}
               className="w-full h-full rounded-full"
               resizeMode="contain"
             />
@@ -118,10 +123,10 @@ const Chat = ({ route }) => {
                 <>
                   <View className="flex items-center justify-center mb-6">
                     <Avatar.Image
-                      source={{ uri: chat?.userInfo?.profilePic }}
+                      source={{ uri: chat?.userInfo?.avatar }}
                       size={90}
                     />
-                    <Text className="text-[28px] text-gray-800 font-semibold mt-2 mb-1">
+                    <Text className="text-[28px] text-gray-800 font-semibold mt-2 mb-1 capitalize">
                       {chat?.userInfo?.name}
                     </Text>
                     <Text className="text-xs text-gray-500">
@@ -131,31 +136,27 @@ const Chat = ({ route }) => {
                   <>
                     {messages?.map((msg) =>
                       msg.sender === user?.id ? (
-                        <>
-                          <MessageText
-                            key={msg.id}
-                            type="sender"
-                            content={msg.message}
-                            time={msg.date}
-                          />
-                        </>
+                        <MessageText
+                          key={`sender-${msg.id}`}
+                          type="sender"
+                          content={msg.message}
+                          time={msg.date}
+                        />
                       ) : (
-                        <>
-                          <MessageText
-                            key={msg.id}
-                            url={chat?.userInfo?.profilePic}
-                            type="receiver"
-                            content={msg.message}
-                            time={msg.date}
-                          />
-                        </>
+                        <MessageText
+                          key={`receiver-${msg.id}`}
+                          avatar={chat?.userInfo?.avatar}
+                          type="receiver"
+                          content={msg.message}
+                          time={msg.date}
+                        />
                       )
                     )}
                   </>
                 </>
               )}
             </ScrollView>
-            <InputChat data={chat} room={room} />
+            <InputChat data={chat} room={roomId} />
           </>
         </KeyboardAvoidingView>
       </View>

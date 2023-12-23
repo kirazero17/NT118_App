@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { BottomNavigation } from "react-native-paper";
-import { Calls, Contacts, Discovery, Home, Notification } from "../screens";
+import { Calls, Contacts, Home, Notification } from "../screens";
 
 const Tabs = createBottomTabNavigator();
 
@@ -10,31 +10,25 @@ const BottomTab = () => {
   const [routes] = useState([
     {
       key: "Home",
-      title: "Chats",
+      title: "Đoạn chat",
       focusedIcon: "chat",
       unfocusedIcon: "chat-outline",
     },
     {
       key: "Calls",
-      title: "Calls",
+      title: "Cuộc gọi",
       focusedIcon: "video",
       unfocusedIcon: "video-outline",
     },
     {
-      key: "Discovery",
-      title: "Discovery",
-      focusedIcon: "compass",
-      unfocusedIcon: "compass-outline",
-    },
-    {
       key: "Notification",
-      title: "Notification",
+      title: "Thông báo",
       focusedIcon: "bell",
       unfocusedIcon: "bell-outline",
     },
     {
       key: "Contacts",
-      title: "Contacts",
+      title: "Danh bạ",
       focusedIcon: "account-group",
       unfocusedIcon: "account-group-outline",
     },
@@ -43,7 +37,6 @@ const BottomTab = () => {
   const renderScene = BottomNavigation.SceneMap({
     Home: () => <Home />,
     Calls: () => <Calls />,
-    Discovery: () => <Discovery />,
     Notification: () => <Notification />,
     Contacts: () => <Contacts />,
   });

@@ -1,33 +1,46 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import {
+  faVideo,
+  faPhone,
+  faMessage,
+  faEllipsis,
+  faInfoCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { useLayoutEffect, useState } from "react";
 
-const ContactButton = () => {
+const ContactButton = ({ text, onPress, isRounded }) => {
+  const [icon, setIcon] = useState(faMessage);
+
+  useLayoutEffect(() => {
+    switch (text) {
+      case "Message":
+        return setIcon(faMessage);
+      case "Video Call":
+        return setIcon(faVideo);
+      case "Call":
+        return setIcon(faPhone);
+      case "Info":
+        return setIcon(faInfoCircle);
+      case "More":
+        return setIcon(faEllipsis);
+    }
+  }, [text]);
   return (
-    <View className="w-full flex-row items-center justify-evenly py-6">
-      <View className="items-center justify-center">
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-          <FontAwesomeIcon icon={faMessage} size={24} color="#666" />
-        </TouchableOpacity>
-        <Text className="text-sm text-gray-600 py-1">Message</Text>
-      </View>
-      <View className="items-center justify-center">
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-          <FontAwesomeIcon icon={faVideo} size={24} color="#666" />
-        </TouchableOpacity>
-        <Text className="text-sm text-gray-600 py-1">Video Call</Text>
-      </View>
-      <View className="items-center justify-center">
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-          <FontAwesomeIcon icon={faPhone} size={24} color="#666" />
-        </TouchableOpacity>
-        <Text className="text-sm text-gray-600 py-1">Call</Text>
-      </View>
-      <View className="items-center justify-center">
-        <TouchableOpacity className="items-center justify-center w-12 h-12 rounded-lg bg-gray-300">
-          <FontAwesomeIcon icon={faEllipsis} size={24} color="#666" />
-        </TouchableOpacity>
-        <Text className="text-sm text-gray-600 py-1">More</Text>
-      </View>
+    <View className="items-center justify-center">
+      <TouchableOpacity
+        onPress={onPress}
+        className={`items-center justify-center w-12 h-12 ${
+          isRounded ? "rounded-full" : "rounded-lg"
+        } bg-gray-300`}
+      >
+        <FontAwesomeIcon
+          icon={icon}
+          size={24}
+          color={isRounded ? "#444" : "#555"}
+        />
+      </TouchableOpacity>
+      <Text className="text-sm text-gray-600 py-1">{text}</Text>
     </View>
   );
 };

@@ -9,8 +9,8 @@ const Contacts = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   return (
-    <SafeAreaView className="flex-1 mt-3 justify-center items-center">
-      <Header title="Contacts" icon={faContactBook} size={28} />
+    <SafeAreaView className="flex-1 pt-3 justify-center items-center">
+      <Header title="Danh bạ" icon={faContactBook} size={28} />
       <Searchbar
         className=" w-11/12 bg-sky-100 mt-2 h-[52px]"
         iconColor="#22d3ee"
@@ -20,7 +20,7 @@ const Contacts = () => {
         onChangeText={(query) => setSearchQuery(query)}
       />
       <ScrollView className="w-full">
-        <ListContact title="Suggested" />
+        <ListContact />
       </ScrollView>
     </SafeAreaView>
   );

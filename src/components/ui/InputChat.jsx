@@ -1,8 +1,8 @@
-import { View, TouchableOpacity, TextInput } from "react-native";
+import { View, TouchableOpacity, TextInput, Keyboard } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faFaceSmile, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useState, useRef } from "react";
-import { ref, update, get } from "firebase/database";
+import { ref, update, get, serverTimestamp } from "firebase/database";
 import { fireStoreDB } from "../../config/firebase";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
@@ -28,7 +28,7 @@ const InputChat = ({ room, data }) => {
 
     try {
       const newMessage = {
-        id: `${user?.id}-${currentChat}`,
+        id: `${Math.round(Math.random() * 1000000000)}`,
         message,
         sender: user?.id,
         date: currentChat,
@@ -45,16 +45,17 @@ const InputChat = ({ room, data }) => {
       });
 
       await update(ref(fireStoreDB, "userChats/" + user?.id + "/" + room), {
-        ["lastMessage"]: `You: ${message}`,
+        ["lastMessage"]: `You sent: ${message}`,
         ["lastSend"]: currentTime,
-        ["messages"]: [message],
+        ["time"]: serverTimestamp(),
       });
 
       await update(
         ref(fireStoreDB, "userChats/" + data?.userInfo?.id + "/" + room),
         {
-          ["lastMessage"]: `${user?.fullName}: ${message}`,
+          ["lastMessage"]: message,
           ["lastSend"]: currentTime,
+          ["time"]: serverTimestamp(),
         }
       );
 
@@ -79,6 +80,7 @@ const InputChat = ({ room, data }) => {
           placeholderTextColor={"#999"}
           value={message}
           onChangeText={(text) => setMessage(text)}
+          onSubmitEditing={handleSendMessage}
         />
       </View>
       <TouchableOpacity onPress={handleSendMessage}>

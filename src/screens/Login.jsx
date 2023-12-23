@@ -20,7 +20,7 @@ const Login = () => {
     toast.show({
       render: () => <Toast title={title} status={status} variant={variant} />,
       duration: status === "success" ? 1000 : 2000,
-      placement: status === "success" ? "bottom" : "top",
+      placement: "bottom",
     });
   };
 
@@ -37,7 +37,7 @@ const Login = () => {
 
         dispatch(SET_USER(user.val()));
 
-        showToast("Login successfully!", "success", "left-accent");
+        showToast("Đăng nhập thành công!", "success", "left-accent");
 
         navigation.replace("Loading");
         setTimeout(() => {
@@ -45,11 +45,17 @@ const Login = () => {
         }, 2000);
       } catch (error) {
         if (error.code === "auth/invalid-login-credentials") {
-          showToast("Invalid login credentials!", "warning", "left-accent");
+          showToast(
+            "Email hoặc mật khẩu không đúng!",
+            "warning",
+            "left-accent"
+          );
         } else if (error.code === "auth/invalid-email") {
-          showToast("Invalid email!", "warning", "left-accent");
+          showToast("Định dạng email không đúng!", "warning", "left-accent");
         }
       }
+    } else {
+      showToast("Vui lòng nhập đầy đủ thông tin!", "warning", "left-accent");
     }
   };
 

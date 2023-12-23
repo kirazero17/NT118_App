@@ -7,7 +7,7 @@ import { List } from "react-native-paper";
 const Calls = () => {
   return (
     <SafeAreaView className="flex-1 mt-3">
-      <Header title="Calls" icon={faVideo} size={28} />
+      <Header title="Cuộc gọi" icon={faVideo} size={28} />
       <ScrollView>
         <List.Section className="mx-1">
           <ListCall

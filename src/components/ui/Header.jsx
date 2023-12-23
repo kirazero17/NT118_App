@@ -18,7 +18,7 @@ const Header = ({ title, icon, size }) => {
           className="w-[54px] h-[54px] rounded-full border-2 border-sky-400 flex items-center justify-center"
         >
           <Image
-            source={{ uri: user?.profilePic } || defaultAvatar}
+            source={{ uri: user?.avatar } || defaultAvatar}
             className="w-full h-full rounded-full"
             resizeMode="cover"
           />

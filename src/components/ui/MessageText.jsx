@@ -1,18 +1,18 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { useSelector } from "react-redux";
 import { Avatar } from "react-native-paper";
 
-const MessageText = ({ type, content, time, url }) => {
-  const user = useSelector((state) => state.user.user);
+const MessageText = ({ type, content, time, avatar }) => {
   return (
     <View
       style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
       className="flex items-center justify-center space-x-2"
     >
       <View className="flex-row items-center justify-center space-x-2">
-        {type !== "sender" && <Avatar.Image source={{ uri: url }} size={55} />}
-        <View className="mt-1">
+        {type !== "sender" && (
+          <Avatar.Image source={{ uri: avatar }} size={55} />
+        )}
+        <View className="mt-1 w-[55%]">
           <View
             style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
             className={`px-4 py-2 rounded-tl-2xl rounded-tr-2xl ${

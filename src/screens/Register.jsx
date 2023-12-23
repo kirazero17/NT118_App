@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
-import { Logo, defaultAvatar } from "../../assets";
+import { Logo } from "../../assets";
 import { AuthForm, Toast } from "../components";
 import { useNavigation } from "@react-navigation/native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -29,13 +29,14 @@ const Register = () => {
           password
         );
 
-        showToast("Account created successfully!", "success", "left-accent");
+        showToast("Tạo tài khoản thành công", "success", "left-accent");
 
         const data = {
           id: userCred?.user.uid,
           fullName: name,
           email: email,
-          roomChats: [],
+          avatar:
+            "https://img.freepik.com/premium-vector/art-illustration_890735-11.jpg?w=740",
           listFriends: [],
           listBlocked: [],
           createAt: new Date().toISOString(),
@@ -43,39 +44,24 @@ const Register = () => {
 
         await set(ref(fireStoreDB, "users/" + userCred?.user.uid), data);
 
-        await set(ref(fireStoreDB, "userChats/" + userCred?.user.uid), {});
-
         navigation.navigate("Login");
       } catch (error) {
         if (error.code === "auth/email-already-in-use") {
-          showToast("Email already in use!", "warning", "left-accent");
+          showToast("Email này đã có người sử dụng!", "warning", "left-accent");
         } else if (error.code === "auth/invalid-email") {
-          showToast("Invalid email!", "warning", "left-accent");
+          showToast("Định dạng email không đúng!", "warning", "left-accent");
         } else if (error.code === "auth/weak-password") {
-          showToast("Weak password!", "warning", "left-accent");
+          showToast(
+            "Mật khẩu phải có ít nhất 6 ký tự!",
+            "warning",
+            "left-accent"
+          );
         }
       }
     } else {
-      showToast("Please fill all the fields!", "warning", "left-accent");
+      showToast("Vui lòng điền đẩy đủ thông tin!", "warning", "left-accent");
     }
   };
-  // const handleSignUp = async ({ name, email, password }) => {
-  //   const data = {
-  //     username: name,
-  //     email: email,
-  //     password: password,
-  //   };
-  //   await fetch("http://172.20.10.12:3000/api/auth/register", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(data),
-  //   }).then((res) => {
-  //     console.log(res);
-  //     showToast("Account created successfully!", "success", "top-accent");
-  //   });
-  // };
   return (
     <View className="w-full h-full mt-16 flex items-center justify-start py-6 px-6 space-y-6">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />

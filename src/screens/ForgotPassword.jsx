@@ -37,7 +37,7 @@ const ForgotPassword = () => {
         </View>
 
         <TouchableOpacity className="w-full px-4 py-1 border border-sky-700 rounded-2xl bg-white my-3 flex items-center justify-center">
-          <Text className="py-2 text-primary text-xl font-semibold">
+          <Text className="py-2 text-sky-300 text-xl font-semibold">
             Submit
           </Text>
         </TouchableOpacity>
