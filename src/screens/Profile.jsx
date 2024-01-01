@@ -33,6 +33,10 @@ const Profile = () => {
 
   const handleSignOut = async () => {
     try {
+      await update(ref(fireStoreDB, "users/" + user?.id), {
+        status: "offline",
+      });
+
       await firebaseAuth.signOut().then(() => {
         dispatch(SET_USER_NULL());
         navigation.replace("Login");
@@ -47,25 +51,6 @@ const Profile = () => {
     setIsMenu(false);
 
     try {
-      const userChats = await get(ref(fireStoreDB, "userChats/"));
-
-      if (userChats.exists()) {
-        Object?.keys(userChats.val())?.map(async (key) => {
-          const userChat = await get(ref(fireStoreDB, "userChats/" + key));
-
-          Object?.keys(userChat.val())?.map(async (chat) => {
-            if (userChat.val()[chat]?.userInfo?.id === user?.id) {
-              await update(
-                ref(fireStoreDB, "userChats/" + key + "/" + chat + "/userInfo"),
-                {
-                  avatar: item?.image.asset.url,
-                }
-              );
-            }
-          });
-        });
-      }
-
       await update(ref(fireStoreDB, "users/" + user?.id), {
         avatar: item?.image.asset.url,
       });
@@ -80,7 +65,11 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 items-center justify-start bg-[#dfdfdf]">
+    <SafeAreaView
+      className={`flex-1 items-center justify-start ${
+        Platform.OS === "ios" ? "bg-[#eaeaea]" : "bg-[#dfdfdf]"
+      }`}
+    >
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       {isMenu && (
         <>
@@ -128,8 +117,8 @@ const Profile = () => {
             className="w-full h-full rounded-full"
             resizeMode="contain"
           />
-          <View className="w-6 h-6 bg-sky-400 rounded-full absolute top-0 right-0 flex items-center justify-center">
-            <FontAwesomeIcon icon={faPen} color="#cffafe" size={12} />
+          <View className="w-5 h-5 bg-sky-400 rounded-full absolute top-0 right-0 flex items-center justify-center">
+            <FontAwesomeIcon icon={faPen} color="#cffafe" size={10} />
           </View>
         </TouchableOpacity>
       </View>
@@ -153,14 +142,20 @@ const Profile = () => {
         <SettingButton label="File & Images" isLast color="#d946ef" />
       </View>
       <View className="w-full items-center mt-8">
-        <SettingButton label="Account" isFirst isLast color="#374151" />
+        <SettingButton
+          onPress={() => navigation.navigate("ChangePassword")}
+          label="Account"
+          isFirst
+          isLast
+          color="#374151"
+        />
       </View>
 
       <TouchableOpacity
         onPress={handleSignOut}
         className="w-11/12 px-3 py-3 mt-12 border border-sky-300 rounded-xl bg-white flex-row items-center justify-center"
       >
-        <Text className="font-medium text-xl text-sky-400 px-3">Logout</Text>
+        <Text className="font-medium text-xl text-sky-400 px-3">Đăng xuất</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

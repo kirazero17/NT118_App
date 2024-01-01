@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+  Platform,
+} from "react-native";
 import { Logo } from "../../assets";
 import { AuthForm, Toast } from "../components";
 import { useNavigation } from "@react-navigation/native";
@@ -6,7 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { fireStoreDB, firebaseAuth } from "../config/firebase";
-import { ref, get } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { useDispatch } from "react-redux";
 import { SET_USER } from "../context/slices/userSlice";
 import { useToast } from "native-base";
@@ -33,10 +40,13 @@ const Login = () => {
           password
         );
 
+        await update(ref(fireStoreDB, "users/" + userCred?.user.uid), {
+          status: "online",
+        });
+
         const user = await get(ref(fireStoreDB, "users/" + userCred?.user.uid));
 
         dispatch(SET_USER(user.val()));
-
         showToast("Đăng nhập thành công!", "success", "left-accent");
 
         navigation.replace("Loading");
@@ -60,7 +70,11 @@ const Login = () => {
   };
 
   return (
-    <View className="w-full h-full mt-16 flex items-center justify-start py-6 px-6 space-y-6">
+    <View
+      className={`w-full h-full ${
+        Platform.OS === "ios" ? "mt-20" : "mt-16"
+      } flex items-center justify-start py-6 px-6 space-y-6`}
+    >
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="flex-row items-center justify-center">
         <Image source={Logo} className="w-24 h-24" resizeMode="contain" />
@@ -83,11 +97,9 @@ const Login = () => {
           </TouchableOpacity>
         </View>
         <View className="w-full py-6 flex-row items-center justify-center space-x-2">
-          <Text className="text-lg text-gray-600">Don't have an account?</Text>
+          <Text className="text-lg text-gray-600">Bạn chưa có tài khoản?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text className="text-lg font-semibold text-blue-950">
-              Create Here
-            </Text>
+            <Text className="text-lg font-semibold text-blue-950">Đăng ký</Text>
           </TouchableOpacity>
         </View>
       </View>

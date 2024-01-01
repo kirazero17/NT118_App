@@ -13,7 +13,7 @@ const Toast = ({ title, status, variant }) => {
       <HStack space={2} flexShrink={1} w="100%" alignItems="center">
         <Alert.Icon />
         <Text
-          fontSize="md"
+          fontSize="sm"
           fontWeight="medium"
           flexShrink={1}
           color={

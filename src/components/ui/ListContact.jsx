@@ -2,10 +2,12 @@ import { useState, useLayoutEffect } from "react";
 import { ref, onValue } from "firebase/database";
 import { fireStoreDB } from "../../config/firebase";
 import { useSelector } from "react-redux";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Platform } from "react-native";
 import { List } from "react-native-paper";
 import ItemContact from "./ItemContact";
-const ListContact = ({ title }) => {
+import SkeletonContact from "./SkeletonContact";
+
+const ListContact = () => {
   const [suggest, setSuggest] = useState([]);
   const [friend, setFriend] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +27,8 @@ const ListContact = ({ title }) => {
         if (userData.id !== user?.id) {
           if (userData.listFriends?.includes(user?.id)) {
             listFriend.push(userData);
-          } else {
+          } else if (userData?.status === "online") {
+            // } else {
             listSuggest.push(userData);
           }
         }
@@ -47,9 +50,18 @@ const ListContact = ({ title }) => {
     <List.Section className="mx-1">
       {isLoading ? (
         <>
-          <View className="w-full flex items-center justify-center mt-8">
-            <ActivityIndicator size={"large"} color={"#13ceeb"} />
-          </View>
+          {Platform.OS === "ios" ? (
+            <View className="w-full mt-12">
+              <SkeletonContact />
+              <SkeletonContact />
+              <SkeletonContact />
+              <SkeletonContact />
+            </View>
+          ) : (
+            <View className="w-full flex items-center justify-center mt-8">
+              <ActivityIndicator size={"large"} color={"#13ceeb"} />
+            </View>
+          )}
         </>
       ) : (
         <>

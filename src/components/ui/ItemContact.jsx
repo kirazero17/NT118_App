@@ -24,30 +24,6 @@ const ItemContact = ({ value }) => {
           users: [user?.id, value?.id],
           createAt: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
         });
-
-        await update(
-          ref(fireStoreDB, "userChats/" + user?.id + "/" + combineId),
-          {
-            ["userInfo"]: {
-              id: value?.id,
-              name: value?.fullName,
-              email: value?.email,
-              avatar: value?.avatar,
-            },
-          }
-        );
-
-        await update(
-          ref(fireStoreDB, "userChats/" + value?.id + "/" + combineId),
-          {
-            ["userInfo"]: {
-              id: user?.id,
-              name: user?.fullName,
-              email: user?.email,
-              avatar: user?.avatar,
-            },
-          }
-        );
       }
 
       navigation.navigate("Chat", {
@@ -62,7 +38,11 @@ const ItemContact = ({ value }) => {
     <View className="flex justify-center mx-5 mb-5">
       <TouchableOpacity onPress={createChat} className="flex-row items-center">
         <Avatar.Image size={50} source={{ uri: value?.avatar }} />
-        <View className="w-3 h-3 bg-green-500 rounded-full absolute top-9 left-9 "></View>
+        <View
+          className={`w-3 h-3 ${
+            value?.status === "online" ? "bg-green-500" : "bg-gray-500"
+          } rounded-full absolute top-9 left-9`}
+        ></View>
         <Text className="text-lg font-semibold ml-3 capitalize">
           {value?.fullName}
         </Text>

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SafeAreaView, ScrollView } from "react-native";
 import { Header, ListContact } from "../components";
 import { faContactBook } from "@fortawesome/free-solid-svg-icons";
 import { Searchbar } from "react-native-paper";
-import { useDispatch } from "react-redux";
 
 const Contacts = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -19,7 +18,7 @@ const Contacts = () => {
         value={searchQuery}
         onChangeText={(query) => setSearchQuery(query)}
       />
-      <ScrollView className="w-full">
+      <ScrollView showsVerticalScrollIndicator={false} className="w-full">
         <ListContact />
       </ScrollView>
     </SafeAreaView>

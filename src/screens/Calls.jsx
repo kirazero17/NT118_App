@@ -8,7 +8,7 @@ const Calls = () => {
   return (
     <SafeAreaView className="flex-1 mt-3">
       <Header title="Cuộc gọi" icon={faVideo} size={28} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <List.Section className="mx-1">
           <ListCall
             typeIcon={"phone-incoming"}

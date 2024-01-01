@@ -6,16 +6,16 @@ const MessageText = ({ type, content, time, avatar }) => {
   return (
     <View
       style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
-      className="flex items-center justify-center space-x-2"
+      className="flex items-center justify-center space-x-2 mt-3"
     >
       <View className="flex-row items-center justify-center space-x-2">
         {type !== "sender" && (
-          <Avatar.Image source={{ uri: avatar }} size={55} />
+          <Avatar.Image source={{ uri: avatar }} size={50} />
         )}
-        <View className="mt-1 w-[55%]">
+        <View className="mt-1 w-1/2">
           <View
             style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
-            className={`px-4 py-2 rounded-tl-2xl rounded-tr-2xl ${
+            className={`px-3 py-2 mb-1 rounded-tl-2xl rounded-tr-2xl ${
               type === "sender" ? "rounded-bl-2xl" : "rounded-br-2xl"
             } bg-sky-400 w-auto relative `}
           >
@@ -27,7 +27,7 @@ const MessageText = ({ type, content, time, avatar }) => {
           <View
             style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
           >
-            <Text className="text-[12px] text-gray-800 font-semibold ">
+            <Text className="text-[10px] text-gray-800 text font-semibold ">
               {time}
             </Text>
           </View>

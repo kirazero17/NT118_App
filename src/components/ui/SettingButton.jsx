@@ -21,7 +21,7 @@ import {
   faCommentSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
-const SettingButton = ({ label, isFirst, isLast, status, color }) => {
+const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
   const [icon, setIcon] = useState(faChevronRight);
   const [rounded, setRounded] = useState("rounded-none");
 
@@ -71,6 +71,7 @@ const SettingButton = ({ label, isFirst, isLast, status, color }) => {
   return (
     <>
       <TouchableOpacity
+        onPress={onPress}
         className={`w-11/12 px-3 py-4 flex-row items-center ${rounded} justify-between bg-gray-100`}
       >
         <View className="flex-row items-center">

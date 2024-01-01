@@ -3,13 +3,14 @@ import {
   View,
   Text,
   SafeAreaView,
-  ScrollView,
   ActivityIndicator,
+  Platform,
 } from "react-native";
-import { Header, NotifyCard } from "../components";
+import { Header, NotifyCard, SkeletonNotify } from "../components";
 import { useSelector } from "react-redux";
-import { ref, onValue, get } from "firebase/database";
+import { ref, onValue } from "firebase/database";
 import { fireStoreDB } from "../config/firebase";
+import { FlatList } from "native-base";
 
 const Notification = () => {
   const user = useSelector((state) => state.user.user);
@@ -27,6 +28,10 @@ const Notification = () => {
           const listNotify = notifications.filter((item) => {
             return item.receiverId === user?.id;
           });
+          listNotify.sort((a, b) => {
+            return b.id - a.id;
+          });
+
           setNotify(listNotify);
         }
       }
@@ -43,34 +48,47 @@ const Notification = () => {
   return (
     <SafeAreaView className="flex-1 pt-3">
       <Header title="Thông báo" />
-      <ScrollView className="w-full px-3 pt-3">
-        {isLoading ? (
-          <View className="w-full flex items-center justify-center mt-8">
-            <ActivityIndicator size={"large"} color={"#13ceeb"} />
-          </View>
-        ) : (
-          <>
-            {notify && notify.length > 0 ? (
-              <>
-                {notify.map((item, idx) => (
+      {isLoading ? (
+        <>
+          {Platform.OS === "ios" ? (
+            <View className="w-full mt-6">
+              <SkeletonNotify />
+              <SkeletonNotify />
+              <SkeletonNotify />
+              <SkeletonNotify />
+            </View>
+          ) : (
+            <View className="w-full flex items-center justify-center mt-8">
+              <ActivityIndicator size={"large"} color={"#13ceeb"} />
+            </View>
+          )}
+        </>
+      ) : (
+        <>
+          {notify && notify.length > 0 ? (
+            <>
+              <FlatList
+                className="w-full px-3 pt-3"
+                data={notify}
+                renderItem={({ item }) => (
                   <NotifyCard
-                    key={idx}
                     id={item.id}
                     type={item.type}
                     senderName={item.senderName}
                     avatar={item.avatar}
                     senderId={item.senderId}
                   />
-                ))}
-              </>
-            ) : (
-              <Text className="text-center text-gray-500 text-lg mt-4">
-                Không có thông báo nào
-              </Text>
-            )}
-          </>
-        )}
-      </ScrollView>
+                )}
+                keyExtractor={(item) => item.id}
+              />
+            </>
+          ) : (
+            <Text className="text-center text-xl text-sky-600 font-semibold mt-5">
+              Không có thông báo nào
+            </Text>
+          )}
+        </>
+      )}
     </SafeAreaView>
   );
 };

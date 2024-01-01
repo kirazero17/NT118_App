@@ -60,7 +60,7 @@ const AuthForm = ({ isLogin, onSubmit }) => {
             onPress={() => navigation.navigate("ForgotPassword")}
           >
             <Text className="text-lg font-medium text-neutral-800">
-              Forgot password ?
+              Quên mật khẩu?
             </Text>
           </TouchableOpacity>
         </View>
@@ -70,7 +70,7 @@ const AuthForm = ({ isLogin, onSubmit }) => {
         className="w-full px-4 py-1 border border-sky-700 rounded-2xl bg-white my-3 flex items-center justify-center"
       >
         <Text className="py-2 text-sky-400 text-xl font-semibold">
-          {isLogin ? "Sign In" : "Sign Up"}
+          {isLogin ? "Đăng nhập" : "Đăng ký"}
         </Text>
       </TouchableOpacity>
     </View>

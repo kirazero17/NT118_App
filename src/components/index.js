@@ -10,3 +10,6 @@ export { default as ListCall } from "./ui/ListCall";
 export { default as NotifyCard } from "./ui/NotifyCard";
 export { default as ItemContact } from "./ui/ItemContact";
 export { default as InputChat } from "./ui/InputChat";
+export { default as SkeletonContact } from "./ui/SkeletonContact";
+export { default as SkeletonNotify } from "./ui/SkeletonNotify";
+export { default as Input } from "./auth/Input";

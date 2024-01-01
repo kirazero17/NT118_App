@@ -1,4 +1,4 @@
-import { useState, useLayoutEffect, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Platform,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -39,7 +40,11 @@ const SettingChat = ({ route }) => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 items-center bg-[#dfdfdf]">
+    <SafeAreaView
+      className={`flex-1 items-center ${
+        Platform.OS === "ios" ? "bg-[#eaeaea]" : "bg-[#dfdfdf]"
+      }`}
+    >
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="w-full px-4 mt-3">
         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -59,7 +64,7 @@ const SettingChat = ({ route }) => {
       <Text className="text-base font-semibold text-gray-500">
         {user?.email}
       </Text>
-      <View className="w-full flex-row items-center justify-evenly mt-2">
+      <View className="w-full flex-row items-center justify-evenly mt-8">
         <ContactButton
           onPress={() =>
             navigation.navigate("ProfileContact", {
@@ -70,7 +75,8 @@ const SettingChat = ({ route }) => {
           text="Info"
           isRounded
         />
-        <ContactButton text="Video Call" isRounded />
+        <ContactButton text="Call" isRounded />
+        <ContactButton text="More" isRounded />
       </View>
       <List.Section className="w-full">
         <List.Subheader className="text-base text-gray-500 font-bold">
@@ -95,8 +101,7 @@ const SettingChat = ({ route }) => {
           Privacy & Support
         </List.Subheader>
         <View className="w-full items-center">
-          <SettingButton label="Hạn chế" isFirst color="#0f172a" />
-          <SettingButton label="Block" color="#dc2626" />
+          <SettingButton label="Block" isFirst color="#dc2626" />
           <SettingButton label="Report" isLast color="#ca8a04" />
         </View>
       </List.Section>

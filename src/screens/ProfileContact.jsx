@@ -281,7 +281,11 @@ const ProfileContact = ({ route }) => {
 
   return (
     <PaperProvider>
-      <SafeAreaView className="flex-1 items-center bg-[#dfdfdf]">
+      <SafeAreaView
+        className={`flex-1 items-center ${
+          Platform.OS === "ios" ? "bg-[#eaeaea]" : "bg-[#dfdfdf]"
+        }`}
+      >
         <StatusBar backgroundColor="#9ca3af" barStyle="default" />
         <View className="w-full px-4 mt-3">
           <TouchableOpacity onPress={() => navigation.goBack()}>

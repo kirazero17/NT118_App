@@ -1,18 +1,19 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { useState, useLayoutEffect } from "react";
-import { Card, IconButton, Button } from "react-native-paper";
-import { Avatar } from "native-base";
+import { Card, IconButton, Button, Icon } from "react-native-paper";
 import { ref, update, get, serverTimestamp } from "firebase/database";
 import { fireStoreDB } from "../../config/firebase";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
-import { useToast } from "native-base";
+import { useToast, useDisclose, Actionsheet, Avatar } from "native-base";
 import Toast from "./Toast";
 
 const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
   const toast = useToast();
   const [content, setContent] = useState("");
   const user = useSelector((state) => state.user.user);
+
+  const { isOpen, onOpen, onClose } = useDisclose();
 
   const showToast = (title, status, variant) => {
     toast.show({
@@ -132,6 +133,26 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
     }
   };
 
+  const handleRM = async () => {
+    try {
+      const notifyRef = ref(fireStoreDB, `middleware/`);
+      const snapshot = await get(notifyRef);
+      const currentNotifications = snapshot.val()?.notifications || [];
+
+      const updatedNotifications = currentNotifications.filter(
+        (notification) => {
+          return !(notification.id === id);
+        }
+      );
+
+      await update(notifyRef, {
+        notifications: updatedNotifications,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useLayoutEffect(() => {
     switch (type) {
       case "friendRequest":
@@ -144,11 +165,11 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
   }, [type]);
 
   return (
-    <Card mode="contained" className="mb-2 p-1 bg-gray-100">
+    <Card mode="contained" className="mb-2 p-1 bg-gray-200">
       <View className="flex-row justify-start items-center my-1 mx-1">
         <TouchableOpacity className="flex-row items-center">
           <Avatar source={{ uri: avatar }} size="lg">
-            <Avatar.Badge bg="green.500" />
+            {/* <Avatar.Badge bg="green.500" /> */}
           </Avatar>
         </TouchableOpacity>
         <Text className="ml-3 w-[65%]">
@@ -158,7 +179,39 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
           <Text> </Text>
           <Text className="text-base font-medium ml-1">{content}</Text>
         </Text>
-        <IconButton className="flex-1" icon="dots-horizontal" size={30} />
+        <IconButton
+          onPress={onOpen}
+          className="flex-1"
+          icon="dots-horizontal"
+          size={30}
+        />
+        <Actionsheet isOpen={isOpen} onClose={onClose}>
+          <Actionsheet.Content>
+            <View className="w-full flex items-center justify-center px-2 py-2">
+              <TouchableOpacity
+                onPress={handleRM}
+                className="w-full py-3 flex-row items-center"
+              >
+                <Icon source="text-box-remove" size={24} color="#374151" />
+                <Text className="text-xl text-gray-700 font-semibold ml-2">
+                  Gỡ bỏ thông báo này
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="w-full py-3 flex-row items-center">
+                <Icon source="inbox-remove" size={24} color="#374151" />
+                <Text className="text-xl text-gray-700 font-semibold ml-2">
+                  Tắt thông báo từ {senderName}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="w-full py-3 flex-row items-center">
+                <Icon source="information" size={24} color="#374151" />
+                <Text className="text-xl text-gray-700 font-semibold ml-2">
+                  Báo cáo sự cố với thông báo này
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Actionsheet.Content>
+        </Actionsheet>
       </View>
 
       {type === "friendRequest" && (

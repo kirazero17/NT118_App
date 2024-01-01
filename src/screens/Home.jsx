@@ -5,8 +5,8 @@ import {
   ActivityIndicator,
   Text,
 } from "react-native";
-import { useState, useLayoutEffect } from "react";
-import { ref, onValue } from "firebase/database";
+import { useState, useEffect } from "react";
+import { ref, onValue, get } from "firebase/database";
 import { fireStoreDB } from "../config/firebase";
 import { useSelector } from "react-redux";
 import { Header, MessageCard } from "../components";
@@ -18,8 +18,8 @@ const Home = () => {
 
   const user = useSelector((state) => state.user.user);
 
-  useLayoutEffect(() => {
-    const chatRef = ref(fireStoreDB, "userChats/" + user?.id);
+  useEffect(() => {
+    const chatRef = ref(fireStoreDB, "rooms/");
 
     setIsLoading(true);
     const handleData = (snapshot) => {
@@ -27,16 +27,27 @@ const Home = () => {
 
       if (snapshot.exists()) {
         Object.keys(snapshot.val()).forEach((key) => {
-          if (snapshot.val()[key].lastMessage) {
-            listChat.push({
-              id: key,
-              ...snapshot.val()[key],
-            });
+          if (snapshot.val()[key].users.includes(user?.id)) {
+            const userChat = snapshot
+              .val()
+              [key].users.find((item) => item !== user?.id);
+
+            if (snapshot.val()[key]?.lastMessage) {
+              onValue(ref(fireStoreDB, "users/" + userChat), (chat) => {
+                listChat.push({
+                  id: snapshot.val()[key].id,
+                  userInfo: chat.val(),
+                  lastMessage: snapshot.val()[key].lastMessage,
+                  lastSend: snapshot.val()[key].lastSend,
+                  time: snapshot.val()[key].time,
+                });
+              });
+            }
           }
         });
       }
 
-      listChat.sort((a, b) => {
+      listChat?.sort((a, b) => {
         return b.time - a.time;
       });
 
@@ -49,12 +60,15 @@ const Home = () => {
     return () => {
       unsubscribe();
     };
-  }, [user]);
+  }, [user?.id]);
 
   return (
     <SafeAreaView className="flex-1 pt-3 justify-center items-center">
       <Header title="Đoạn chat" icon={faComments} size={40} />
-      <ScrollView className="w-full px-4 py-4">
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        className="w-full px-4 py-4"
+      >
         <View className="w-full">
           {isLoading ? (
             <>
@@ -66,12 +80,14 @@ const Home = () => {
             <>
               {chats && chats.length > 0 ? (
                 <>
-                  {chats.map((item) => (
+                  {chats.map((item, idx) => (
                     <MessageCard
-                      key={item.id}
-                      name={item.userInfo.name}
+                      key={idx}
+                      name={item.userInfo.fullName}
                       avatar={item.userInfo.avatar}
-                      lastMessage={item.lastMessage}
+                      status={item.userInfo.status}
+                      lastMessage={item.lastMessage.message}
+                      senderId={item.lastMessage.senderId}
                       time={item.lastSend}
                       room={item.id}
                     />

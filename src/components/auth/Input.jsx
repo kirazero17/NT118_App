@@ -20,9 +20,11 @@ const Input = ({ placeholder, value, isPass, onChangeText }) => {
       case "Email":
         return setIcon(faEnvelope);
       case "Password":
+      case "New Password":
+      case "Re-enter new password":
         return setIcon(faLock);
     }
-  }, []);
+  }, [placeholder]);
 
   return (
     <View

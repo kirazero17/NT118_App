@@ -9,5 +9,6 @@ export { default as Contacts } from "./Contacts";
 export { default as Calls } from "./Calls";
 export { default as Notification } from "./Notification";
 export { default as Chat } from "./Chat";
+export { default as ChangePassword } from "./ChangePassword";
 export { default as SettingChat } from "./SettingChat";
 export { default as SettingCall } from "./SettingCall";

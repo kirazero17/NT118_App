@@ -1,4 +1,11 @@
-import { View, Text, Image, TouchableOpacity, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StatusBar,
+  Platform,
+} from "react-native";
 import { Logo } from "../../assets";
 import { AuthForm, Toast } from "../components";
 import { useNavigation } from "@react-navigation/native";
@@ -29,8 +36,6 @@ const Register = () => {
           password
         );
 
-        showToast("Tạo tài khoản thành công", "success", "left-accent");
-
         const data = {
           id: userCred?.user.uid,
           fullName: name,
@@ -43,6 +48,7 @@ const Register = () => {
         };
 
         await set(ref(fireStoreDB, "users/" + userCred?.user.uid), data);
+        showToast("Tạo tài khoản thành công", "success", "left-accent");
 
         navigation.navigate("Login");
       } catch (error) {
@@ -63,22 +69,26 @@ const Register = () => {
     }
   };
   return (
-    <View className="w-full h-full mt-16 flex items-center justify-start py-6 px-6 space-y-6">
+    <View
+      className={`w-full h-full ${
+        Platform.OS === "ios" ? "mt-20" : "mt-16"
+      } flex items-center justify-start py-6 px-6 space-y-6`}
+    >
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="flex-row items-center justify-center">
         <Image source={Logo} className="w-24 h-24" resizeMode="contain" />
         <Text className="text-sky-950 text-2xl font-normal">
-          Create Account
+          Đăng ký tài khoản
         </Text>
       </View>
       <View className="bg-sky-300 w-full flex items-center justify-center px-4 pt-6 pb-4 rounded-2xl">
         <AuthForm isLogin={false} onSubmit={handleSignUp} />
         <View className="w-full py-6 flex-row items-center justify-center space-x-2">
-          <Text className="text-lg text-gray-600">
-            Already have an account?
-          </Text>
+          <Text className="text-lg text-gray-600">Bạn đã có tài khoản?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text className="text-lg font-semibold text-blue-950">Sign In</Text>
+            <Text className="text-lg font-semibold text-blue-950">
+              Đăng nhập
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

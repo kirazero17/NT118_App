@@ -16,7 +16,7 @@ import {
   faPhone,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { get, ref, onValue } from "firebase/database";
 import { fireStoreDB } from "../config/firebase";
@@ -34,18 +34,17 @@ const Chat = ({ route }) => {
 
   useEffect(() => {
     const getRoom = async () => {
-      const snapshot = await get(ref(fireStoreDB, "userChats/" + user?.id));
-      Object.keys(snapshot.val()).map((key) => {
-        if (key === roomId) {
-          setChat(snapshot.val()[key]);
-        }
+      const snapshot = await get(ref(fireStoreDB, "rooms/" + roomId));
+      const userChat = snapshot.val().users.find((item) => item !== user?.id);
+      onValue(ref(fireStoreDB, "users/" + userChat), (snapshot) => {
+        setChat(snapshot.val());
       });
     };
 
     getRoom();
   }, [roomId]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     setLoading(true);
     onValue(ref(fireStoreDB, "rooms/" + roomId), (snapshot) => {
       if (snapshot.exists()) {
@@ -74,7 +73,7 @@ const Chat = ({ route }) => {
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("SettingChat", {
-              userId: chat?.userInfo?.id,
+              userId: chat?.id,
               roomId: roomId,
             })
           }
@@ -82,17 +81,21 @@ const Chat = ({ route }) => {
         >
           <View className="w-12 h-12 relative border-2 border-sky-400 rounded-full">
             <Image
-              source={{ uri: chat?.userInfo?.avatar }}
+              source={{ uri: chat?.avatar }}
               className="w-full h-full rounded-full"
               resizeMode="contain"
             />
           </View>
           <View>
             <Text className="font-semibold text-lg capitalize">
-              {chat?.userInfo?.name}
+              {chat?.fullName}
             </Text>
-            <Text className="text-sm text-gray-400 font-semibold capitalize">
-              online
+            <Text
+              className={`text-sm ${
+                chat?.status === "online" ? "text-green-700" : "text-gray-500"
+              } font-semibold capitalize`}
+            >
+              {chat?.status}
             </Text>
           </View>
         </TouchableOpacity>
@@ -105,14 +108,14 @@ const Chat = ({ route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View className="w-full bg-slate-50 px-2 py-6 rounded-2xl flex-1 -mt-4 items-center">
+      <View className="w-full bg-slate-50 px-2 mb-4 rounded-2xl flex-1 -mt-4 items-center">
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           keyboardVerticalOffset={100}
         >
           <>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {loading ? (
                 <>
                   <View className="w-full flex items-center justify-center">
@@ -121,17 +124,23 @@ const Chat = ({ route }) => {
                 </>
               ) : (
                 <>
-                  <View className="flex items-center justify-center mb-6">
-                    <Avatar.Image
-                      source={{ uri: chat?.userInfo?.avatar }}
-                      size={90}
-                    />
+                  <View className="flex items-center justify-center mb-6 mt-3">
+                    <Avatar.Image source={{ uri: chat?.avatar }} size={90} />
                     <Text className="text-[28px] text-gray-800 font-semibold mt-2 mb-1 capitalize">
-                      {chat?.userInfo?.name}
+                      {chat?.fullName}
                     </Text>
                     <Text className="text-xs text-gray-500">
                       LET'S BREAK THE ICE
                     </Text>
+                    {chat?.listFriends?.includes(user?.id) ? (
+                      <Text className="text-sm text-gray-500 font-semibold text-center">
+                        Các bạn là bạn bè trên hệ thống
+                      </Text>
+                    ) : (
+                      <Text className="text-sm text-gray-500 font-semibold">
+                        Các bạn chưa là bạn bè trên hệ thống
+                      </Text>
+                    )}
                   </View>
                   <>
                     {messages?.map((msg) =>
@@ -145,7 +154,7 @@ const Chat = ({ route }) => {
                       ) : (
                         <MessageText
                           key={`receiver-${msg.id}`}
-                          avatar={chat?.userInfo?.avatar}
+                          avatar={chat?.avatar}
                           type="receiver"
                           content={msg.message}
                           time={msg.date}
@@ -156,7 +165,7 @@ const Chat = ({ route }) => {
                 </>
               )}
             </ScrollView>
-            <InputChat data={chat} room={roomId} />
+            <InputChat room={roomId} />
           </>
         </KeyboardAvoidingView>
       </View>
