@@ -135,6 +135,7 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
 
   const handleRM = async () => {
     try {
+      onClose();
       const notifyRef = ref(fireStoreDB, `middleware/`);
       const snapshot = await get(notifyRef);
       const currentNotifications = snapshot.val()?.notifications || [];
@@ -187,7 +188,7 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
         />
         <Actionsheet isOpen={isOpen} onClose={onClose}>
           <Actionsheet.Content>
-            <View className="w-full flex items-center justify-center px-2 py-2">
+            <View className="w-full flex items-center justify-center px-2">
               <TouchableOpacity
                 onPress={handleRM}
                 className="w-full py-3 flex-row items-center"

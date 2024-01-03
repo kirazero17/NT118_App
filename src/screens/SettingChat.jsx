@@ -6,7 +6,6 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
-  Platform,
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -40,11 +39,7 @@ const SettingChat = ({ route }) => {
   }, []);
 
   return (
-    <SafeAreaView
-      className={`flex-1 items-center ${
-        Platform.OS === "ios" ? "bg-[#eaeaea]" : "bg-[#dfdfdf]"
-      }`}
-    >
+    <SafeAreaView className="flex-1 items-center bg-[#eaeaea]">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       <View className="w-full px-4 mt-3">
         <TouchableOpacity onPress={() => navigation.goBack()}>

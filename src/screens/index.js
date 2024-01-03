@@ -12,3 +12,4 @@ export { default as Chat } from "./Chat";
 export { default as ChangePassword } from "./ChangePassword";
 export { default as SettingChat } from "./SettingChat";
 export { default as SettingCall } from "./SettingCall";
+export { default as UpdateProfile } from "./UpdateProfile";

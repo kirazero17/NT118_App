@@ -10,6 +10,7 @@ import {
   SettingCall,
   ProfileContact,
   ChangePassword,
+  UpdateProfile,
 } from "./src/screens";
 import { Provider } from "react-redux";
 import Store from "./src/context/store";
@@ -32,6 +33,7 @@ export default function App() {
             <Stack.Screen name="Home" component={BottomTab} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
+            <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
             <Stack.Screen name="ProfileContact" component={ProfileContact} />
             <Stack.Screen name="Chat" component={Chat} />
             <Stack.Screen name="SettingChat" component={SettingChat} />

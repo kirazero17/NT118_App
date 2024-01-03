@@ -19,11 +19,15 @@ import { SET_USER, SET_USER_NULL } from "../context/slices/userSlice";
 import SettingButton from "../components/ui/SettingButton";
 import { avatars } from "../utils/avatarsApi";
 import { update, ref, get } from "firebase/database";
+import { useDisclose, Actionsheet } from "native-base";
+import { Icon } from "react-native-paper";
 
 const Profile = () => {
   const [isMenu, setIsMenu] = useState(false);
   const screenWidth = Math.round(Dimensions.get("window").width);
   const screenHeight = Math.round(Dimensions.get("window").height);
+
+  const { isOpen, onOpen, onClose } = useDisclose();
 
   const navigation = useNavigation();
 
@@ -65,11 +69,7 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView
-      className={`flex-1 items-center justify-start ${
-        Platform.OS === "ios" ? "bg-[#eaeaea]" : "bg-[#dfdfdf]"
-      }`}
-    >
+    <SafeAreaView className="flex-1 items-center justify-start bg-[#eaeaea]">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
       {isMenu && (
         <>
@@ -143,12 +143,42 @@ const Profile = () => {
       </View>
       <View className="w-full items-center mt-8">
         <SettingButton
-          onPress={() => navigation.navigate("ChangePassword")}
+          onPress={onOpen}
           label="Account"
           isFirst
           isLast
           color="#374151"
         />
+        <Actionsheet isOpen={isOpen} onClose={onClose}>
+          <Actionsheet.Content>
+            <View className="w-full flex items-center justify-center px-2">
+              <TouchableOpacity
+                onPress={() => {
+                  onClose();
+                  navigation.navigate("UpdateProfile");
+                }}
+                className="w-full py-3 flex-row items-center"
+              >
+                <Icon source="account-edit" size={24} color="#374151" />
+                <Text className="text-xl text-gray-700 font-semibold ml-2">
+                  Thông tin cá nhân
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  onClose();
+                  navigation.navigate("ChangePassword");
+                }}
+                className="w-full py-3 flex-row items-center"
+              >
+                <Icon source="lock" size={24} color="#374151" />
+                <Text className="text-xl text-gray-700 font-semibold ml-2">
+                  Đổi mật khẩu
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Actionsheet.Content>
+        </Actionsheet>
       </View>
 
       <TouchableOpacity

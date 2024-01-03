@@ -108,7 +108,7 @@ const Chat = ({ route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View className="w-full bg-slate-50 px-2 mb-4 rounded-2xl flex-1 -mt-4 items-center">
+      <View className="w-full bg-slate-50 px-2 pb-4 rounded-2xl flex-1 -mt-4 items-center">
         <KeyboardAvoidingView
           className="flex-1"
           behavior={Platform.OS === "ios" ? "padding" : "height"}
