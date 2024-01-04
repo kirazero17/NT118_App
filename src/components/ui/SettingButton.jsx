@@ -19,9 +19,20 @@ import {
   faFaceSmile,
   faFont,
   faCommentSlash,
+  faUsers,
+  faMagnifyingGlass,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
-const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
+const SettingButton = ({
+  label,
+  isFirst,
+  isLast,
+  status,
+  color,
+  onPress,
+  checked,
+}) => {
   const [icon, setIcon] = useState(faChevronRight);
   const [rounded, setRounded] = useState("rounded-none");
 
@@ -35,19 +46,19 @@ const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
         return setIcon(faCircleUser);
       case "Support":
         return setIcon(faCircleQuestion);
-      case "File & Images":
+      case "Xem file phương tiện":
         return setIcon(faImage);
       case "Status":
         return setIcon(faFire);
       case "Avatar":
         return setIcon(faUser);
-      case "Notification & Sound":
+      case "Thông báo & Âm Thanh":
         return setIcon(faBell);
-      case "Report":
+      case "Báo cáo":
         return setIcon(faTriangleExclamation);
-      case "Block":
+      case "Chặn":
         return setIcon(faCircleMinus);
-      case "Information":
+      case "Thông tin tài khoản":
         return setIcon(faCircleInfo);
       case "Emoji":
         return setIcon(faFaceSmile);
@@ -55,6 +66,12 @@ const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
         return setIcon(faFont);
       case "Hạn chế":
         return setIcon(faCommentSlash);
+      case "Thành viên":
+        return setIcon(faUsers);
+      case "Tìm kiếm trong cuộc trò chuyện":
+        return setIcon(faMagnifyingGlass);
+      case "Rời khỏi nhóm":
+        return setIcon(faRightFromBracket);
     }
   }, [label]);
 
@@ -76,7 +93,11 @@ const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
       >
         <View className="flex-row items-center">
           <FontAwesomeIcon icon={icon} size={22} color={color} />
-          <Text className="text-base font-semibold text-gray-700 mx-3">
+          <Text
+            className={`text-base font-semibold ${
+              checked ? "text-red-500" : "text-gray-700"
+            } mx-3`}
+          >
             {label}
           </Text>
         </View>
@@ -86,7 +107,9 @@ const SettingButton = ({ label, isFirst, isLast, status, color, onPress }) => {
               {status}
             </Text>
           )}
-          <FontAwesomeIcon icon={faChevronRight} size={16} color="#666" />
+          {!checked && (
+            <FontAwesomeIcon icon={faChevronRight} size={16} color="#666" />
+          )}
         </View>
       </TouchableOpacity>
       <Divider bold={true} />

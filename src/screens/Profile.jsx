@@ -138,8 +138,8 @@ const Profile = () => {
       </View>
       <View className="w-full items-center mt-8">
         <SettingButton label="Avatar" isFirst color="#a78bfa" />
-        <SettingButton label="Notification & Sound" color="#fbbf24" />
-        <SettingButton label="File & Images" isLast color="#d946ef" />
+        <SettingButton label="Thông báo & Âm Thanh" color="#fbbf24" />
+        <SettingButton label="Xem file phương tiện" isLast color="#d946ef" />
       </View>
       <View className="w-full items-center mt-8">
         <SettingButton

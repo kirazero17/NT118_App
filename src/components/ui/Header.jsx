@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { Logo, defaultAvatar } from "../../../assets";
 import React from "react";
 
-const Header = ({ title, icon, size }) => {
+const Header = ({ title, icon, size, onPress }) => {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.user);
 
@@ -25,7 +25,7 @@ const Header = ({ title, icon, size }) => {
         </TouchableOpacity>
         <Text className="text-2xl font-medium">{title}</Text>
         {icon ? (
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onPress}>
             <FontAwesomeIcon icon={icon} size={size} color="#7dd3fc" />
           </TouchableOpacity>
         ) : (

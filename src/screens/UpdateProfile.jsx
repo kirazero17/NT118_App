@@ -126,7 +126,6 @@ const UpdateProfile = () => {
         <TextInput
           className="w-full text-lg font-medium text-gray-500 h-12 px-4 rounded-lg border border-gray-400 flex items-start justify-center"
           value={phone}
-          inputMode="numeric"
           onFocus={() => setPhone("")}
           onChangeText={(text) => setPhone(text)}
         />

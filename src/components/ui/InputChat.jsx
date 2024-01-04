@@ -60,7 +60,6 @@ const InputChat = ({ room }) => {
           senderId: user?.id,
           message,
         },
-        ["lastSend"]: currentTime,
       });
 
       setMessage("");

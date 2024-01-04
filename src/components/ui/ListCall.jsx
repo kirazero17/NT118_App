@@ -1,18 +1,10 @@
 import { TouchableOpacity, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { Avatar, List } from "react-native-paper";
-import React, { Fragment } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import {
-  faCircleInfo,
-  faInfo,
-  faPhone,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 
 const ListCall = ({ typeIcon, typeCall, day }) => {
-  const navigation = useNavigation();
-
   const user = useSelector((state) => state.user.user);
 
   return (

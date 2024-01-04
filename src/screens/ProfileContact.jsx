@@ -324,12 +324,16 @@ const ProfileContact = ({ route }) => {
                   source={iconButton}
                   size={24}
                   color={`${
-                    titleButton === "Hủy kết bạn" ? "#f87171" : "#374151"
+                    titleButton === "Hủy kết bạn" ||
+                    titleButton === "Hủy yêu cầu kết bạn"
+                      ? "#f87171"
+                      : "#374151"
                   }`}
                 />
                 <Text
                   className={`text-xl ${
-                    titleButton === "Hủy kết bạn"
+                    titleButton === "Hủy kết bạn" ||
+                    titleButton === "Hủy yêu cầu kết bạn"
                       ? "text-red-400"
                       : "text-gray-700"
                   } font-semibold ml-2`}
@@ -400,12 +404,12 @@ const ProfileContact = ({ route }) => {
       </View>
 
       <View className="w-full items-center mt-4">
-        <SettingButton label="Information" isFirst color="#2563eb" />
-        <SettingButton label="Notification & Sound" isLast color="#d946ef" />
+        <SettingButton label="Thông tin tài khoản" isFirst color="#2563eb" />
+        <SettingButton label="Thông báo & Âm Thanh" isLast color="#d946ef" />
       </View>
       <View className="w-full items-center mt-4">
-        <SettingButton label="Block" isFirst color="#dc2626" />
-        <SettingButton label="Report" isLast color="#ca8a04" />
+        <SettingButton label="Chặn" isFirst color="#dc2626" />
+        <SettingButton label="Báo cáo" isLast color="#ca8a04" />
       </View>
     </SafeAreaView>
   );

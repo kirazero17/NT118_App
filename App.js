@@ -11,6 +11,9 @@ import {
   ProfileContact,
   ChangePassword,
   UpdateProfile,
+  SettingGroupChat,
+  GroupChat,
+  CreateGroup,
 } from "./src/screens";
 import { Provider } from "react-redux";
 import Store from "./src/context/store";
@@ -36,6 +39,12 @@ export default function App() {
             <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
             <Stack.Screen name="ProfileContact" component={ProfileContact} />
             <Stack.Screen name="Chat" component={Chat} />
+            <Stack.Screen name="GroupChat" component={GroupChat} />
+            <Stack.Screen
+              name="SettingGroupChat"
+              component={SettingGroupChat}
+            />
+            <Stack.Screen name="CreateGroup" component={CreateGroup} />
             <Stack.Screen name="SettingChat" component={SettingChat} />
             <Stack.Screen name="SettingCall" component={SettingCall} />
           </Stack.Navigator>

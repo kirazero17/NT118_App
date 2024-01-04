@@ -87,8 +87,8 @@ const SettingChat = ({ route }) => {
           Others
         </List.Subheader>
         <View className="w-full items-center">
-          <SettingButton label="File & Images" isFirst color="#2563eb" />
-          <SettingButton label="Notification & Sound" isLast color="#d946ef" />
+          <SettingButton label="Xem file phương tiện" isFirst color="#2563eb" />
+          <SettingButton label="Thông báo & Âm Thanh" isLast color="#d946ef" />
         </View>
       </List.Section>
       <List.Section className="w-full">
@@ -96,8 +96,8 @@ const SettingChat = ({ route }) => {
           Privacy & Support
         </List.Subheader>
         <View className="w-full items-center">
-          <SettingButton label="Block" isFirst color="#dc2626" />
-          <SettingButton label="Report" isLast color="#ca8a04" />
+          <SettingButton label="Chặn" isFirst color="#dc2626" />
+          <SettingButton label="Báo cáo" isLast color="#ca8a04" />
         </View>
       </List.Section>
     </SafeAreaView>

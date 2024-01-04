@@ -2,7 +2,7 @@ import { TouchableOpacity, Text, View } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleInfo } from "@fortawesome/free-solid-svg-icons";
 import { Avatar } from "react-native-paper";
-import { ref, set, update, get } from "firebase/database";
+import { ref, set, get } from "firebase/database";
 import { fireStoreDB } from "../../config/firebase";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";

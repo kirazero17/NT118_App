@@ -45,7 +45,7 @@ const Contacts = () => {
     <SafeAreaView className="flex-1 pt-3 justify-center items-center">
       <Header title="Danh bạ" icon={faContactBook} size={28} />
       <Searchbar
-        className=" w-11/12 bg-sky-100 my-2 h-[52px]"
+        className=" w-11/12 bg-gray-100 my-2 h-[52px]"
         iconColor="#22d3ee"
         placeholder="Search"
         placeholderTextColor={"#888888"}

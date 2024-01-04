@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Avatar } from "react-native-paper";
 
-const MessageText = ({ type, content, time, avatar }) => {
+const MessageText = ({ type, content, time, avatar, name }) => {
   return (
     <View
       style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
@@ -13,6 +13,11 @@ const MessageText = ({ type, content, time, avatar }) => {
           <Avatar.Image source={{ uri: avatar }} size={50} />
         )}
         <View className="mt-1 w-1/2">
+          {name && (
+            <Text className="text-xs text-gray-600 font-semibold mb-1">
+              {name}
+            </Text>
+          )}
           <View
             style={{ alignSelf: type === "sender" ? "flex-end" : "flex-start" }}
             className={`px-3 py-2 mb-1 rounded-tl-2xl rounded-tr-2xl ${

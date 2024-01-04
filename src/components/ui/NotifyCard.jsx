@@ -91,7 +91,7 @@ const NotifyCard = ({ type, senderName, senderId, avatar, id }) => {
       });
 
       showToast(
-        `Bạn đã thêm ${senderName} vào danh sách bạn bè!`,
+        `Bạn đã thêm ${senderName}vào danh sách bạn bè!`,
         "success",
         "left-accent"
       );

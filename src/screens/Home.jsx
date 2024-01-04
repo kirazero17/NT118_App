@@ -11,12 +11,14 @@ import { fireStoreDB } from "../config/firebase";
 import { useSelector } from "react-redux";
 import { Header, MessageCard } from "../components";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [chats, setChats] = useState([]);
 
   const user = useSelector((state) => state.user.user);
+  const navigation = useNavigation();
 
   useEffect(() => {
     const chatRef = ref(fireStoreDB, "rooms/");
@@ -28,19 +30,17 @@ const Home = () => {
       if (snapshot.exists()) {
         Object.keys(snapshot.val()).forEach((key) => {
           if (snapshot.val()[key].users.includes(user?.id)) {
-            const userChat = snapshot
+            const userChats = snapshot
               .val()
-              [key].users.find((item) => item !== user?.id);
+              [key].users.filter((item) => item !== user?.id);
 
             if (snapshot.val()[key]?.lastMessage) {
-              onValue(ref(fireStoreDB, "users/" + userChat), (chat) => {
-                listChat.push({
-                  id: snapshot.val()[key].id,
-                  userInfo: chat.val(),
-                  lastMessage: snapshot.val()[key].lastMessage,
-                  lastSend: snapshot.val()[key].lastSend,
-                  time: snapshot.val()[key].time,
-                });
+              listChat.push({
+                roomId: snapshot.val()[key].id,
+                userChats,
+                nameChat: snapshot.val()[key].name,
+                lastMessage: snapshot.val()[key].lastMessage,
+                time: snapshot.val()[key].time,
               });
             }
           }
@@ -64,7 +64,12 @@ const Home = () => {
 
   return (
     <SafeAreaView className="flex-1 pt-3 justify-center items-center">
-      <Header title="Đoạn chat" icon={faComments} size={40} />
+      <Header
+        title="Đoạn chat"
+        icon={faComments}
+        size={40}
+        onPress={() => navigation.navigate("CreateGroup")}
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         className="w-full px-4 py-4"
@@ -81,16 +86,7 @@ const Home = () => {
               {chats && chats.length > 0 ? (
                 <>
                   {chats.map((item, idx) => (
-                    <MessageCard
-                      key={idx}
-                      name={item.userInfo.fullName}
-                      avatar={item.userInfo.avatar}
-                      status={item.userInfo.status}
-                      lastMessage={item.lastMessage.message}
-                      senderId={item.lastMessage.senderId}
-                      time={item.lastSend}
-                      room={item.id}
-                    />
+                    <MessageCard key={idx} data={item} />
                   ))}
                 </>
               ) : (
