@@ -16,7 +16,7 @@ import {
   faPhone,
   faVideo,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { get, ref, onValue } from "firebase/database";
 import { fireStoreDB } from "../config/firebase";
@@ -26,6 +26,8 @@ import { InputChat, MessageText } from "../components";
 const GroupChat = ({ route }) => {
   const { roomId } = route.params;
   const user = useSelector((state) => state.user.user);
+
+  const scrollViewRef = useRef();
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -38,12 +40,9 @@ const GroupChat = ({ route }) => {
       const userList = {};
       const snapshot = await get(ref(fireStoreDB, "rooms/" + roomId));
       const userChats = snapshot.val().users;
-
-      userChats.map(async (item) => {
+      userChats.forEach((item) => {
         onValue(ref(fireStoreDB, "users/" + item), (snapshot) => {
-          if (snapshot.exists()) {
-            userList[item] = snapshot.val();
-          }
+          userList[item] = snapshot.val();
         });
       });
       setUserChat(userList);
@@ -92,7 +91,7 @@ const GroupChat = ({ route }) => {
             size={50}
             icon={"account-group"}
             color="#f9fafb"
-            className="bg-blue-200 border border-cyan-500"
+            className="bg-blue-300 border border-cyan-500"
           />
           <View>
             <Text className="font-semibold text-lg capitalize">
@@ -116,7 +115,13 @@ const GroupChat = ({ route }) => {
           keyboardVerticalOffset={100}
         >
           <>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+              ref={scrollViewRef}
+              onContentSizeChange={() =>
+                scrollViewRef.current.scrollToEnd({ animated: true })
+              }
+              showsVerticalScrollIndicator={false}
+            >
               {loading ? (
                 <>
                   <View className="w-full flex items-center justify-center">
@@ -130,7 +135,7 @@ const GroupChat = ({ route }) => {
                       size={90}
                       icon={"account-group"}
                       color="#f9fafb"
-                      className="bg-blue-200 border border-cyan-500"
+                      className="bg-blue-300 border border-cyan-500"
                     />
                     <Text className="text-[28px] text-gray-800 font-semibold mt-2 mb-1 capitalize">
                       {chat?.name}
@@ -138,24 +143,66 @@ const GroupChat = ({ route }) => {
                     <Text className="text-xs text-gray-500">
                       LET'S BREAK THE ICE
                     </Text>
+                    <Text className="text-base text-gray-500 mt-6">
+                      {chat?.admin === user?.id
+                        ? "Bạn là người tạo nhóm"
+                        : userChat[chat?.admin]?.fullName +
+                          " là người tạo nhóm"}
+                    </Text>
+
+                    {chat?.admin === user?.id
+                      ? Object.keys(userChat).map(
+                          (key, idx) =>
+                            key !== user?.id && (
+                              <Text
+                                key={idx}
+                                className="text-base text-gray-500 mt-2"
+                              >
+                                Bạn đã thêm {userChat[key]?.fullName} vào nhóm
+                              </Text>
+                            )
+                        )
+                      : Object.keys(userChat).map(
+                          (key, idx) =>
+                            key !== chat?.admin &&
+                            (key === user?.id ? (
+                              <Text
+                                key={idx}
+                                className="text-base text-gray-500 mt-2"
+                              >
+                                {userChat[chat?.admin]?.fullName} đã thêm bạn
+                                vào nhóm
+                              </Text>
+                            ) : (
+                              <Text
+                                key={idx}
+                                className="text-base text-gray-500 mt-2"
+                              >
+                                {userChat[chat?.admin]?.fullName} đã thêm{" "}
+                                {userChat[key]?.fullName} vào nhóm
+                              </Text>
+                            ))
+                        )}
                   </View>
                   <>
                     {messages?.map((msg) =>
                       msg.sender === user?.id ? (
                         <MessageText
                           key={`sender-${msg.id}`}
-                          type="sender"
+                          typeUser="sender"
                           content={msg.message}
                           time={msg.date}
+                          typeMessage={msg.type}
                         />
                       ) : (
                         <MessageText
                           key={`receiver-${msg.id}`}
                           avatar={userChat[msg.sender]?.avatar}
                           name={userChat[msg.sender]?.fullName}
-                          type="receiver"
+                          typeUser="receiver"
                           content={msg.message}
                           time={msg.date}
+                          typeMessage={msg.type}
                         />
                       )
                     )}
@@ -163,7 +210,14 @@ const GroupChat = ({ route }) => {
                 </>
               )}
             </ScrollView>
-            <InputChat room={roomId} />
+            <InputChat
+              room={roomId}
+              onFocus={() => {
+                scrollViewRef.current.scrollToEnd({
+                  animated: true,
+                });
+              }}
+            />
           </>
         </KeyboardAvoidingView>
       </View>
