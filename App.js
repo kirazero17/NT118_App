@@ -34,9 +34,9 @@ export default function App() {
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Loading" component={Loading} />
             <Stack.Screen name="Home" component={BottomTab} />
+            <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="ChangePassword" component={ChangePassword} />
-            <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
             <Stack.Screen name="ProfileContact" component={ProfileContact} />
             <Stack.Screen name="Chat" component={Chat} />
             <Stack.Screen name="GroupChat" component={GroupChat} />
