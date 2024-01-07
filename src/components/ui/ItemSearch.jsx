@@ -3,7 +3,8 @@ import { Avatar } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
-import { faCircleCheck, faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircle } from "@fortawesome/free-regular-svg-icons";
+import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 
 const ItemSearch = ({ value, isCheck, onPress }) => {
   function handler() {

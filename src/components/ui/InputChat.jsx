@@ -1,4 +1,10 @@
-import { View, TouchableOpacity, TextInput, Keyboard } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  Platform,
+} from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faCirclePlus,
@@ -11,8 +17,9 @@ import { ref, update, get, serverTimestamp } from "firebase/database";
 import { fireStoreDB } from "../../config/firebase";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
+import * as ImagePicker from "expo-image-picker";
 
-const InputChat = ({ room }) => {
+const InputChat = ({ room, onFocus }) => {
   const [message, setMessage] = useState("");
   const [isFocus, setIsFocus] = useState(false);
   const user = useSelector((state) => state.user.user);
@@ -24,24 +31,22 @@ const InputChat = ({ room }) => {
     }
   };
 
-  const handleSendFile = async () => {
-    console.log("send file");
-  };
-
   const handleSendMessage = async () => {
     if (message.trim() === "") {
       return;
     }
 
     const currentChat = format(new Date(), "dd/MM HH:mm");
-    const currentTime = new Date().toISOString();
 
     try {
+      setMessage("");
+      Keyboard.dismiss();
       const newMessage = {
         id: `${Math.round(Math.random() * 1000000000)}`,
         message,
         sender: user?.id,
         date: currentChat,
+        type: "text",
       };
 
       const roomRef = ref(fireStoreDB, "rooms/" + room);
@@ -61,9 +66,6 @@ const InputChat = ({ room }) => {
           message,
         },
       });
-
-      setMessage("");
-      Keyboard.dismiss();
     } catch (error) {
       console.log(error);
       throw error;
@@ -71,16 +73,20 @@ const InputChat = ({ room }) => {
   };
 
   return (
-    <View className="w-full flex-row items-center justify-center pt-1">
+    <View
+      className={`w-full flex-row items-center justify-center pt-1 ${
+        Platform.OS === "ios" ? "" : "-mb-2"
+      }`}
+    >
       <View
         className={`flex-row items-center gap-4 px-2 ${
           isFocus ? "hidden" : ""
         }`}
       >
-        <TouchableOpacity onPress={handleSendFile}>
+        <TouchableOpacity>
           <FontAwesomeIcon icon={faCirclePlus} size={24} color="#93c5fd" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleKeyboardOpen}>
+        <TouchableOpacity>
           <FontAwesomeIcon icon={faMicrophone} size={24} color="#93c5fd" />
         </TouchableOpacity>
       </View>
@@ -95,7 +101,10 @@ const InputChat = ({ room }) => {
           placeholder="Type here..."
           placeholderTextColor={"#999"}
           value={message}
-          onFocus={() => setIsFocus(true)}
+          onFocus={() => {
+            onFocus();
+            setIsFocus(true);
+          }}
           onBlur={() => setIsFocus(false)}
           onChangeText={(text) => setMessage(text)}
           onSubmitEditing={handleSendMessage}

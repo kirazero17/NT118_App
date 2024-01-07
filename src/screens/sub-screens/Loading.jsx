@@ -1,5 +1,5 @@
 import { View, Image, Text, ActivityIndicator, StatusBar } from "react-native";
-import { Logo } from "../../assets";
+import { Logo } from "../../../assets";
 
 const Loading = () => {
   return (

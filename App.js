@@ -14,6 +14,7 @@ import {
   SettingGroupChat,
   GroupChat,
   CreateGroup,
+  ShowContacts,
 } from "./src/screens";
 import { Provider } from "react-redux";
 import Store from "./src/context/store";
@@ -45,6 +46,7 @@ export default function App() {
               component={SettingGroupChat}
             />
             <Stack.Screen name="CreateGroup" component={CreateGroup} />
+            <Stack.Screen name="ShowContacts" component={ShowContacts} />
             <Stack.Screen name="SettingChat" component={SettingChat} />
             <Stack.Screen name="SettingCall" component={SettingCall} />
           </Stack.Navigator>

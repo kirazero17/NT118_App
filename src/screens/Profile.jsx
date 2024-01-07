@@ -137,7 +137,12 @@ const Profile = () => {
         <SettingButton label="Support" isLast color="#38bdf8" />
       </View>
       <View className="w-full items-center mt-8">
-        <SettingButton label="Avatar" isFirst color="#a78bfa" />
+        <SettingButton
+          onPress={() => setIsMenu(true)}
+          label="Avatar"
+          isFirst
+          color="#a78bfa"
+        />
         <SettingButton label="Thông báo & Âm Thanh" color="#fbbf24" />
         <SettingButton label="Xem file phương tiện" isLast color="#d946ef" />
       </View>

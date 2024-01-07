@@ -10,25 +10,24 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { useNavigation } from "@react-navigation/native";
-import { ref, onValue } from "firebase/database";
-import { fireStoreDB } from "../config/firebase";
-import { ContactButton, SettingButton } from "../components";
+import { ref, onValue, get, update } from "firebase/database";
+import { fireStoreDB } from "../../config/firebase";
+import { ContactButton, SettingButton } from "../../components";
+import { useSelector } from "react-redux";
 import { List } from "react-native-paper";
 
 const SettingChat = ({ route }) => {
   const { userId, roomId } = route.params;
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState({});
+
+  const currentUser = useSelector((state) => state.user.user);
 
   useEffect(() => {
     const userRef = ref(fireStoreDB, "users/" + userId);
 
-    setIsLoading(true);
     const handleData = (snapshot) => {
       setUser(snapshot.val());
-
-      setIsLoading(false);
     };
 
     const unsubscribe = onValue(userRef, handleData);
@@ -37,7 +36,40 @@ const SettingChat = ({ route }) => {
       unsubscribe();
     };
   }, []);
+  const handleBlock = async () => {
+    try {
+      const userRef = ref(fireStoreDB, "users/" + userId);
+      const userSnapshot = await get(userRef);
+      const listBlockUser = userSnapshot.val()?.listBlocks || [];
 
+      const updatedListBlockUser = [...listBlockUser, currentUser?.id];
+
+      await update(userRef, {
+        listBlocks: updatedListBlockUser,
+      });
+
+      const currentUserRef = ref(fireStoreDB, "users/" + currentUser?.id);
+      const currentUserSnapshot = await get(currentUserRef);
+      const listBlockCurrentUser = currentUserSnapshot.val()?.listBlocks || [];
+
+      const updatedListBlockCurrentUser = [...listBlockCurrentUser, userId];
+
+      await update(currentUserRef, {
+        listBlocks: updatedListBlockCurrentUser,
+      });
+
+      await update(ref(fireStoreDB, "middleware/blocks/" + roomId), {
+        blockId: currentUser?.id,
+        blockedId: userId,
+      });
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <SafeAreaView className="flex-1 items-center bg-[#eaeaea]">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
@@ -96,7 +128,12 @@ const SettingChat = ({ route }) => {
           Privacy & Support
         </List.Subheader>
         <View className="w-full items-center">
-          <SettingButton label="Chặn" isFirst color="#dc2626" />
+          <SettingButton
+            onPress={handleBlock}
+            label="Chặn"
+            isFirst
+            color="#dc2626"
+          />
           <SettingButton label="Báo cáo" isLast color="#ca8a04" />
         </View>
       </List.Section>

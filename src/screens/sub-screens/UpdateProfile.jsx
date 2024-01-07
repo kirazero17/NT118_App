@@ -20,9 +20,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
 import { Radio, Stack, useToast } from "native-base";
 import { update, ref, get } from "firebase/database";
-import { fireStoreDB } from "../config/firebase";
-import { SET_USER } from "../context/slices/userSlice";
-import { Toast } from "../components";
+import { fireStoreDB } from "../../config/firebase";
+import { SET_USER } from "../../context/slices/userSlice";
+import { Toast } from "../../components";
 import { Button } from "react-native-paper";
 
 const UpdateProfile = () => {

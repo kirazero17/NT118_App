@@ -42,9 +42,9 @@ const MessageCard = ({ data }) => {
 
     switch (Time) {
       case "in less than a minute":
-        return setLongTime("Just now");
+        return setLongTime("bây giờ");
       case "less than a minute ago":
-        return setLongTime("Just now");
+        return setLongTime("bây giờ");
       default:
         return setLongTime(Time);
     }
@@ -89,10 +89,10 @@ const MessageCard = ({ data }) => {
         </Avatar>
       ) : (
         <Avt.Icon
-          size={60}
+          size={65}
           icon={"account-group"}
           color="#f9fafb"
-          className="bg-blue-200 border border-cyan-500"
+          className="bg-blue-300 border border-cyan-300"
         />
       )}
       <View className="flex-1 flex items-start justify-center ml-4 ">

@@ -13,11 +13,10 @@ import { useNavigation } from "@react-navigation/native";
 import { Searchbar } from "react-native-paper";
 import { useState, useEffect } from "react";
 import { ref, onValue, set, serverTimestamp } from "firebase/database";
-import { fireStoreDB } from "../config/firebase";
+import { fireStoreDB } from "../../config/firebase";
 import { useSelector } from "react-redux";
-import { ItemSearch } from "../components";
+import { ItemSearch } from "../../components";
 import { format } from "date-fns";
-import { es } from "date-fns/locale";
 
 const CreateGroup = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,7 +36,10 @@ const CreateGroup = () => {
     const handleData = (snapshot) => {
       snapshot.forEach((childSnapshot) => {
         const userData = childSnapshot.val();
-        if (userData?.id !== user?.id) {
+        if (
+          userData?.id !== user?.id &&
+          !userData?.listBlocks?.includes(user?.id)
+        ) {
           listUser.push(userData);
         }
       });
@@ -88,10 +90,11 @@ const CreateGroup = () => {
           users: listUser,
           createAt: format(new Date(), "dd/MM/yyyy HH:mm:ss"),
           lastMessage: {
-            message: `${user?.fullName} đã tạo nhóm`,
+            message: "😇😇😇",
             senderId: user?.id,
           },
           time: serverTimestamp(),
+          admin: user?.id,
         });
         navigation.navigate("GroupChat", {
           roomId: roomId,

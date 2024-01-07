@@ -24,7 +24,10 @@ const ListContact = () => {
 
       snapshot.forEach((childSnapshot) => {
         const userData = childSnapshot.val();
-        if (userData.id !== user?.id) {
+        if (
+          userData.id !== user?.id &&
+          !userData?.listBlocks?.includes(user?.id)
+        ) {
           if (userData.listFriends?.includes(user?.id)) {
             listFriend.push(userData);
           } else if (userData?.status === "online") {
@@ -66,7 +69,7 @@ const ListContact = () => {
       ) : (
         <>
           <List.Subheader className="text-base text-gray-500">
-            Suggests ({suggest.length})
+            Gợi ý ({suggest.length})
           </List.Subheader>
 
           {suggest && suggest.length > 0 && (
@@ -77,7 +80,7 @@ const ListContact = () => {
             </>
           )}
           <List.Subheader className="text-base text-gray-500">
-            Friends ({friend.length})
+            Bạn bè ({friend.length})
           </List.Subheader>
 
           {friend && friend.length > 0 && (

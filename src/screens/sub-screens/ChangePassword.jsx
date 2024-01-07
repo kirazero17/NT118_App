@@ -6,14 +6,14 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
-import { Logo } from "../../assets";
+import { Logo } from "../../../assets";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useState } from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { Input, Toast } from "../components";
+import { Input, Toast } from "../../components";
 import { useToast } from "native-base";
-import { firebaseAuth } from "../config/firebase";
+import { firebaseAuth } from "../../config/firebase";
 import {
   EmailAuthProvider,
   reauthenticateWithCredential,
