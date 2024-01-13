@@ -283,6 +283,49 @@ const ProfileContact = ({ route }) => {
     }
   };
 
+  const handleBlock = async () => {
+    try {
+      onClose();
+      const userRef = ref(fireStoreDB, "users/" + userId);
+      const userSnapshot = await get(userRef);
+      const listBlockUser = userSnapshot.val()?.listBlocks || [];
+
+      const updatedListBlockUser = [...listBlockUser, currentUser?.id];
+
+      await update(userRef, {
+        listBlocks: updatedListBlockUser,
+      });
+
+      const currentUserRef = ref(fireStoreDB, "users/" + currentUser?.id);
+      const currentUserSnapshot = await get(currentUserRef);
+      const listBlockCurrentUser = currentUserSnapshot.val()?.listBlocks || [];
+
+      const updatedListBlockCurrentUser = [...listBlockCurrentUser, userId];
+
+      await update(currentUserRef, {
+        listBlocks: updatedListBlockCurrentUser,
+      });
+
+      const id =
+        currentUser?.id > userId
+          ? currentUser?.id + userId
+          : userId + currentUser?.id;
+
+      await update(ref(fireStoreDB, "middleware/blocks/" + id), {
+        blockId: currentUser?.id,
+        blockedId: userId,
+      });
+
+      showToast(`Bạn đã chặn ${user?.fullName}!`, "warning", "left-accent");
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 1000);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <SafeAreaView className="flex-1 items-center bg-[#eaeaea]">
       <StatusBar backgroundColor="#9ca3af" barStyle="default" />
@@ -341,7 +384,10 @@ const ProfileContact = ({ route }) => {
                   {titleButton}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="w-full py-3 flex-row items-center">
+              <TouchableOpacity
+                onPress={handleBlock}
+                className="w-full py-3 flex-row items-center"
+              >
                 <Icon source="account-lock" size={24} color="#374151" />
                 <Text className="text-xl text-gray-700 font-semibold ml-2">
                   Chặn người dùng
@@ -408,7 +454,12 @@ const ProfileContact = ({ route }) => {
         <SettingButton label="Thông báo & Âm Thanh" isLast color="#d946ef" />
       </View>
       <View className="w-full items-center mt-4">
-        <SettingButton label="Chặn" isFirst color="#dc2626" />
+        <SettingButton
+          onPress={handleBlock}
+          label="Chặn"
+          isFirst
+          color="#dc2626"
+        />
         <SettingButton label="Báo cáo" isLast color="#ca8a04" />
       </View>
     </SafeAreaView>
