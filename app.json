@@ -1,5 +1,4 @@
 {
-  "expo": {
     "name": "project-demo",
     "slug": "project-demo",
     "version": "1.0.0",
@@ -32,5 +31,4 @@
         }
       ]
     ]
-  }
 }
