@@ -1,0 +1,57 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Kodchasan-Bold.ttf",
+      "sha1": "2f11b3863d6ca19a474338b4dd2ce7063f3eb145"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-BoldItalic.ttf",
+      "sha1": "3dd726959e87e2101d25e95554696b2713d8c76d"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-ExtraLight.ttf",
+      "sha1": "2450181c067da9739c3e951f9f49021ba6798f45"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-ExtraLightItalic.ttf",
+      "sha1": "fbdd4c4826d06a5c2712403597b5cb2f27a878b1"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-Italic.ttf",
+      "sha1": "8428946938a71742b71c2520dc589e8bf5cbcb56"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-Light.ttf",
+      "sha1": "6aa6c928a7c32ae1c9528e90ecd19528c3191a73"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-LightItalic.ttf",
+      "sha1": "bf87e1625197b19f6f4f92ba45221fd7c53a4c15"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-Medium.ttf",
+      "sha1": "cef78e1ec8da0a554174a7d00bbdc74194b5c324"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-MediumItalic.ttf",
+      "sha1": "61bd2eb3dc162503941e8c15c29d2c93f2962bce"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-Regular.ttf",
+      "sha1": "eb34dcf0c43dc83449a196d14ef6dd4ec858119d"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-SemiBold.ttf",
+      "sha1": "69a203c7351fc672881c07ba5b3b9ff52b3826fc"
+    },
+    {
+      "path": "assets/fonts/Kodchasan-SemiBoldItalic.ttf",
+      "sha1": "92b1f69a3bdc414fbc1e3d000e63321edb48f310"
+    },
+    {
+      "path": "assets/fonts/OFL.txt",
+      "sha1": "ac7701ae4eab79eb7882aa144433f8787d6934a1"
+    }
+  ]
+}

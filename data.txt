@@ -1,0 +1,84 @@
+userChats: {
+    1: {
+        room1 : {
+            userInfo : {
+                id: 2
+                email: 2@gmail.com,
+                avatar: 222
+            }
+        }
+    },
+    2: {
+        room1 : {
+            userInfo : {
+                id: 1,
+                email: 1@gmail.com,
+                avatar: 111
+            }
+        },
+        room2 : {
+            userInfo : {
+                id: 3
+                email: 3@gmail.com,
+                avatar: 333,
+            }
+        }
+    },
+    3: {
+        room2 : {
+            userInfo : {
+                id: 2
+                email: 2@gmail.com,
+                avatar: 222
+            }
+        }
+    },
+}
+
+users: {
+    1 : {
+        id: 1,
+        email: 1@gmail.com,
+        avatar: 111
+    },
+    2: {
+        id: 2,
+        email: 2@gmail.com,
+        avatar: 222
+    }
+    3: {
+        id: 3,
+        email: 3@gmail.com,
+        avatar: 333
+    }
+}
+
+await update(ref(fireStoreDB, "users/" + currentUser?.id), {
+          friendRequest: {
+            ...currentUserSnapshot.val()?.friendRequest,
+            [userId]: {
+              status: "pending",
+            },
+          },
+        });
+
+const senderId = item.senderId;
+
+            const senderRef = ref(fireStoreDB, `users/${senderId}`);
+            if (!sender[senderId]) {
+              onValue(senderRef, (snapshot) => {
+                if (snapshot.exists()) {
+                  data = {
+                    name: snapshot.val().fullName,
+                    avatar: snapshot.val().avatar,
+                  };
+
+                  setSender((prev) => ({
+                    ...prev,
+                    [senderId]: data,
+                  }));
+                }
+              });
+            }
+
+
